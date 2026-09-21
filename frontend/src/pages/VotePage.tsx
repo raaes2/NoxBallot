@@ -86,12 +86,12 @@ export default function VotePage() {
         contractAddress,
         circuitId: 'cast_vote',
         witnesses: {
-          voter_credential: () => ({
+          voter_credential: () => [{}, {
             voter_id: voterId,
             eligibility_key: eligibilityKey,
-          }),
-          vote_choice: () => BigInt(selectedChoice),
-          admin_secret: () => new Uint8Array(32) as any,
+          }] as any,
+          vote_choice: () => [{}, BigInt(selectedChoice)] as any,
+          admin_secret: () => [{}, new Uint8Array(32)] as any,
         },
         args: [],
       });

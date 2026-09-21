@@ -57,7 +57,7 @@ export default function AdminPage() {
 
       // Compute the admin hash from a default secret key (all zeros for demo)
       const defaultSk = new Uint8Array(32);
-      const adminHash = (pureCircuits as any).nox_admin_key(defaultSk);
+      const adminHash = (pureCircuits as any).vault_admin_key(defaultSk);
 
       const deployTxData = await createUnprovenDeployTx(session.providers as any, {
         compiledContract,
@@ -90,7 +90,7 @@ export default function AdminPage() {
     setUpdateStatus('updating');
     try {
       const skBytes = new Uint8Array(
-        (adminSk || '0'.repeat(64)).match(/.{2}/g)!.map((b) => parseInt(b, 16)),
+        (adminSk || '0'.repeat(64)).match(/.{2}/g)!.map((b: string) => parseInt(b, 16)),
       );
       const deadline = BigInt(Math.floor(Date.now() / 1000) + Number(daysOpen) * 24 * 60 * 60);
       const cap = BigInt(voterCap || '500');
@@ -100,9 +100,9 @@ export default function AdminPage() {
         contractAddress: deployedAddress,
         circuitId: 'update_session',
         witnesses: {
-          voter_credential: () => ({ voter_id: new Uint8Array(32), eligibility_key: new Uint8Array(32) }) as any,
-          admin_secret: () => skBytes,
-          vote_choice: () => 0n as any,
+          voter_credential: () => [{}, { voter_id: new Uint8Array(32), eligibility_key: new Uint8Array(32) }] as any,
+          admin_secret: () => [{}, skBytes] as any,
+          vote_choice: () => [{}, 0n] as any,
         },
         args: [deadline, cap, sessionOpen],
       });
