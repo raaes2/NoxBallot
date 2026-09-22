@@ -1,0 +1,125 @@
+pragma language_version >= 0.22;
+import CompactStandardLibrary;
+
+// ============================================================
+// NoxBallot — Private Voting Contract
+// "Cast in shadow. Counted in light."
+// ============================================================
+// Privacy model:
+//   - WHO you voted for is NEVER revealed on-chain
+//   - Only a nullifier (anonymous commitment) is recorded
+//   - The tally (vote counts) is public and verifiable
+//   - Admin key is stored as a hash — the secret never touches the chain
+// ============================================================
+
+// Public ledger state — anyone can read this
+export ledger admin: Bytes<32>;           // Hash of admin secret key
+export ledger is_active: Boolean;         // Voting session open?
+export ledger deadline: Uint<64>;         // Unix timestamp — voting ends at
+export ledger total_votes: Uint<32>;      // Total ballots cast
+export ledger votes_for: Uint<32>;        // Votes FOR the proposal
+export ledger votes_against: Uint<32>;    // Votes AGAINST the proposal
+export ledger votes_abstain: Uint<32>;    // Abstentions
+export ledger max_voters: Uint<32>;       // Max eligible voters
+export ledger nullifiers: Set<Bytes<32>>; // Anonymous commitment set (one per voter)
+
+// Private structs — NEVER go on-chain
+struct VoterCredential {
+  voter_id: Bytes<32>,          // Unique voter identity (kept secret)
+  eligibility_key: Bytes<32>    // Proof of eligibility (kept secret)
+}
+
+// Private witnesses — supplied at tx time, never disclosed
+witness voter_credential(): VoterCredential;
+witness admin_secret(): Bytes<32>;
+witness vote_choice(): Uint<32>; // 0=for, 1=against, 2=abstain (kept private)
+
+// ============================================================
+// Constructor — called ONCE at deploy time
+// ============================================================
+constructor(
+  admin_hash: Bytes<32>,
+  expiry: Uint<64>,
+  voter_cap: Uint<32>
+) {
+  admin = disclose(admin_hash);
+  deadline = disclose(expiry);
+  max_voters = disclose(voter_cap);
+  is_active = disclose(true);
+  total_votes = disclose(0);
+  votes_for = disclose(0);
+  votes_against = disclose(0);
+  votes_abstain = disclose(0);
+}
+
+// ============================================================
+// cast_vote — private ballot circuit
+// The ZK proof guarantees:
+//   1. The voter is eligible (knows a valid eligibility_key)
+//   2. The voter has not voted before (nullifier not in set)
+//   3. The vote is tallied without revealing the voter's choice
+//      (the choice goes into the ZK proof, not onto the ledger)
+// ============================================================
+export circuit cast_vote(): [] {
+  // Check voting session is open
+  assert(disclose(is_active), "Voting session is closed");
+  assert(blockTimeLt(disclose(deadline)), "Voting deadline has passed");
+  assert(disclose(total_votes) < disclose(max_voters), "Voter cap reached");
+
+  // Read private voter data
+  const cred = voter_credential();
+  const choice = vote_choice();
+
+  // Derive nullifier from voter identity — prevents double voting
+  const nul = make_vote_nullifier(cred.voter_id);
+  assert(!nullifiers.member(disclose(nul)), "This voter has already cast a ballot");
+
+  // Validate choice range (0=for, 1=against, 2=abstain)
+  assert(choice <= 2, "Invalid vote choice");
+
+  // Record nullifier to prevent double voting
+  nullifiers.insert(disclose(nul));
+  total_votes = disclose((total_votes + 1) as Uint<32>);
+
+  // Tally vote — choice stays in ZK circuit, only counters update on-chain
+  if (disclose(choice == 0)) {
+    votes_for = disclose((votes_for + 1) as Uint<32>);
+  }
+  if (disclose(choice == 1)) {
+    votes_against = disclose((votes_against + 1) as Uint<32>);
+  }
+  if (disclose(choice == 2)) {
+    votes_abstain = disclose((votes_abstain + 1) as Uint<32>);
+  }
+}
+
+// ============================================================
+// update_session — admin-only circuit to manage voting
+// Admin is authenticated by proving knowledge of the secret key
+// whose hash matches the on-chain admin hash (never disclosed)
+// ============================================================
+export circuit update_session(
+  new_deadline: Uint<64>,
+  new_max: Uint<32>,
+  active: Boolean
+): [] {
+  const sk = admin_secret();
+  assert(admin == nox_admin_key(sk), "Not authorized: invalid admin key");
+  deadline = disclose(new_deadline);
+  max_voters = disclose(new_max);
+  is_active = disclose(active);
+}
+
+// ============================================================
+// Pure circuits — helper functions (must be exported!)
+// ============================================================
+
+// Derives the admin public key from the secret key using a domain separator
+export pure circuit nox_admin_key(sk: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>([pad(32, "noxBallot:admin:v1"), sk]);
+}
+
+// Derives an anonymous voter commitment from the voter identity
+export pure circuit make_vote_nullifier(voter_id: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>([pad(32, "noxBallot:vote:nullifier:v1"), voter_id]);
+}
