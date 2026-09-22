@@ -1,6 +1,18 @@
 # NoxBallot
 
 [![NoxBallot CI](https://github.com/raaes2/NoxBallot/actions/workflows/ci.yaml/badge.svg)](https://github.com/raaes2/NoxBallot/actions/workflows/ci.yaml)
+[![Midnight Network](https://img.shields.io/badge/Midnight-Network_L1-00F5A0?style=flat-square&logo=circle&logoColor=black)](https://midnight.network)
+[![Compact ZK](https://img.shields.io/badge/Compact-ZK_Circuits-8B5CF6?style=flat-square&logo=shield&logoColor=white)](https://github.com/midnightntwrk/compactc)
+[![React 19](https://img.shields.io/badge/React-19-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://react.dev)
+[![TypeScript 5](https://img.shields.io/badge/TypeScript-5.7-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev)
+[![WebAssembly](https://img.shields.io/badge/WebAssembly-WASM-654FF0?style=flat-square&logo=webassembly&logoColor=white)](https://webassembly.org)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com)
+[![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://nox-ballot.vercel.app)
+
+<p align="left">
+  <img src="https://skillicons.dev/icons?i=react,ts,vite,wasm,nodejs,docker,githubactions,vercel" alt="NoxBallot Tech Stack Icons" />
+</p>
 
 > **Cast in shadow. Counted in light.**
 
@@ -50,15 +62,28 @@ The ZK proof guarantees — without revealing any private input:
 
 ## 💻 Tech Stack
 
+<p align="left">
+  <img src="https://skillicons.dev/icons?i=react,ts,vite,wasm,nodejs,docker,githubactions,vercel" alt="NoxBallot Tech Stack Icons" />
+</p>
+
 NoxBallot is architected across multiple layers for client-side zero-knowledge execution, privacy-preserving state management, and modern responsive UI:
 
 ### 🛡️ Cryptography & Blockchain Core
+[![Midnight](https://img.shields.io/badge/Midnight_Network-Preprod-00F5A0?style=flat-square&logo=circle&logoColor=black)](https://midnight.network/)
+[![Compact](https://img.shields.io/badge/Compact-0.31.0-8B5CF6?style=flat-square)](https://github.com/midnightntwrk/compactc)
+[![WebAssembly](https://img.shields.io/badge/WebAssembly-WASM-654FF0?style=flat-square&logo=webassembly&logoColor=white)](https://webassembly.org/)
+
 - **[Midnight Network](https://midnight.network/)**: Data-protection layer-1 blockchain (Preprod & Preview networks) providing native programmable data privacy.
 - **[Compact Language (v0.31.0)](https://github.com/midnightntwrk/compactc)**: Domain-specific smart contract & ZK circuit language compiling confidential verification logic into zero-knowledge proving keys.
 - **Midnight JS SDK v4.x**: `@midnight-ntwrk/compact-js`, `@midnight-ntwrk/compact-runtime`, `@midnight-ntwrk/midnight-js-contracts`, `@midnight-ntwrk/ledger-v8`.
 - **WebAssembly (WASM)**: Client-side cryptographic proof generation running directly inside the user's browser runtime.
 
 ### 🎨 Frontend & Design System
+[![React](https://img.shields.io/badge/React-19-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev/)
+[![React Router](https://img.shields.io/badge/React_Router-v7-CA4245?style=flat-square&logo=reactrouter&logoColor=white)](https://reactrouter.com/)
+
 - **[React 19](https://react.dev/)**: Modern declarative component architecture.
 - **[TypeScript 5.7](https://www.typescriptlang.org/)**: Strict static typing across contract bindings, witnesses, and UI states.
 - **[Vite 5.4](https://vite.dev/)**: High-performance bundler and dev server equipped with `vite-plugin-wasm` and `vite-plugin-top-level-await`.
@@ -67,10 +92,16 @@ NoxBallot is architected across multiple layers for client-side zero-knowledge e
 - **Typography**: Google Fonts — **Space Grotesk** (Display/Headings), **Plus Jakarta Sans** (Interface/Body), and **IBM Plex Mono** (Cryptographic Hashes & Nullifiers).
 
 ### 🔑 Wallet & Connectivity
+[![1AM](https://img.shields.io/badge/1AM_Wallet-Midnight-00F5A0?style=flat-square)](https://docs.midnight.network/develop/tutorial/using/1am-wallet)
+
 - **1AM Wallet Extension**: Primary Midnight DApp connector for secure browser-side key management and transaction approval.
 - **Pluggable DApp Connector API**: Multi-wallet detection supporting 1AM, Lace, and Nightly wallet extensions.
 
 ### 🧪 Tooling, DevOps & Infrastructure
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
+[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI-2088FF?style=flat-square&logo=githubactions&logoColor=white)](https://github.com/features/actions)
+[![Vercel](https://img.shields.io/badge/Vercel-Deployment-000000?style=flat-square&logo=vercel&logoColor=white)](https://nox-ballot.vercel.app/)
+
 - **[Vitest](https://vitest.dev/) & Node.js**: Integration test suites verifying contract deployment, ballot casting, and anti-double-vote nullifiers.
 - **Docker & Docker Compose**: Local development sandbox orchestrating `midnight-node`, `proof-server`, and `indexer`.
 - **GitHub Actions**: Continuous integration running contract compilation, automated tests, and production build checks.
