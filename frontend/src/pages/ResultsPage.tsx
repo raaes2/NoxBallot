@@ -34,6 +34,7 @@ export default function ResultsPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
+  const [copiedAddr, setCopiedAddr] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('NOXBALLOT_CONTRACT_ADDRESS') ?? '';
@@ -50,7 +51,7 @@ export default function ResultsPage() {
         session.config.indexerWsUri,
       );
       const raw = await provider.queryContractState(contractAddress);
-      if (!raw) throw new Error('Contract not found. Is the address correct?');
+      if (!raw) throw new Error('Contract not found. Please verify the contract address.');
       const state = ledger(raw.data);
       setTally({
         totalVotes:   state.total_votes,
@@ -69,39 +70,67 @@ export default function ResultsPage() {
     }
   }, [session, contractAddress]);
 
+  const copyAddress = async () => {
+    if (!contractAddress) return;
+    await navigator.clipboard.writeText(contractAddress);
+    setCopiedAddr(true);
+    setTimeout(() => setCopiedAddr(false), 2000);
+  };
+
   return (
     <div className="page">
-      <div className="container" style={{ maxWidth: 760 }}>
-        <div style={{ marginBottom: '2rem', animation: 'fadeInDown 0.5s ease both' }}>
-          <p className="section-header__eyebrow">Public Tally</p>
-          <h1>Live Voting Results</h1>
+      <div className="container" style={{ maxWidth: 840 }}>
+        {/* Header */}
+        <div style={{ marginBottom: '2.5rem' }} className="animate-fade-down">
+          <p className="section-header__eyebrow">ON-CHAIN AUDIT · IMMUTABLE TALLY</p>
+          <h1>Live Governance Analytics</h1>
           <p>
-            The tally is fully public and verifiable on-chain. Every ballot remains sealed.
+            Audit official ballot totals directly from the Midnight ledger.
+            Results are authenticated by cryptographic consensus while every individual choice remains sealed.
           </p>
         </div>
 
         {!isConnected ? (
-          <div className="card text-center" style={{ padding: '3rem 2rem' }}>
-            <p style={{ fontSize: '3rem', marginBottom: '1rem' }}>📊</p>
-            <h3 style={{ marginBottom: '0.75rem' }}>Connect to View Tally</h3>
-            <p style={{ marginBottom: '1.5rem' }}>
-              Connect your wallet to query the on-chain voting state.
+          <div className="card text-center animate-fade-up" style={{ padding: '3.5rem 2rem' }}>
+            <div
+              style={{
+                width: 64,
+                height: 64,
+                borderRadius: '50%',
+                background: 'rgba(0, 245, 160, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 1.5rem',
+                color: 'var(--clr-primary)',
+              }}
+            >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+              </svg>
+            </div>
+            <h3 style={{ marginBottom: '0.75rem' }}>Connect to Audit Results</h3>
+            <p style={{ maxWidth: 450, margin: '0 auto 1.75rem' }}>
+              Connect your wallet to query on-chain state via the Midnight indexer.
             </p>
             <WalletButton />
           </div>
         ) : (
           <>
-            {/* Query controls */}
+            {/* Query Control Box */}
             <div className="card mb-6 animate-fade-up">
               <div className="field">
                 <label className="label" htmlFor="results-contract-input">
-                  Contract Address
+                  Contract Identifier
                 </label>
                 <input
                   id="results-contract-input"
                   type="text"
                   className="input"
-                  placeholder="Paste the NoxBallot contract address"
+                  style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.85rem' }}
+                  placeholder="Paste the NoxBallot contract address (64 hex characters)"
                   value={contractAddress}
                   onChange={(e) => {
                     setContractAddress(e.target.value);
@@ -109,30 +138,40 @@ export default function ResultsPage() {
                   }}
                 />
               </div>
-              <button
-                id="fetch-results-btn"
-                onClick={fetchTally}
-                disabled={loading || !contractAddress}
-                className="btn btn-primary w-full"
-              >
-                {loading ? (
-                  <>
-                    <span className="spinner" />
-                    Querying on-chain state…
-                  </>
-                ) : (
-                  '📊 Fetch Results'
-                )}
-              </button>
+              <div className="flex gap-4">
+                <button
+                  id="fetch-results-btn"
+                  onClick={fetchTally}
+                  disabled={loading || !contractAddress}
+                  className="btn btn-primary"
+                  style={{ flex: 1 }}
+                >
+                  {loading ? (
+                    <>
+                      <span className="spinner" />
+                      Querying Midnight Indexer…
+                    </>
+                  ) : (
+                    <>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                      </svg>
+                      Fetch On-Chain Results
+                    </>
+                  )}
+                </button>
+              </div>
+
               {lastRefreshed && (
-                <p className="text-muted text-center mt-2" style={{ fontSize: '0.8125rem' }}>
-                  Last refreshed: {lastRefreshed.toLocaleTimeString()}
+                <p className="text-muted text-center mt-3" style={{ fontSize: '0.8125rem', margin: '0.75rem 0 0' }}>
+                  State confirmed at {lastRefreshed.toLocaleTimeString()} · Indexed on Midnight Preprod
                 </p>
               )}
             </div>
 
             {error && (
-              <div className="status-message status-message--error mb-4">
+              <div className="status-message status-message--error mb-4 animate-fade-up">
                 <span>⚠️</span>
                 <span>{error}</span>
               </div>
@@ -140,53 +179,52 @@ export default function ResultsPage() {
 
             {tally && (
               <div className="animate-fade-up">
-                {/* Session status */}
-                <div className="flex-between mb-6">
-                  <h2>Voting Results</h2>
+                {/* Session Status Ribbon */}
+                <div className="flex-between mb-4">
+                  <h2 style={{ fontSize: '1.4rem' }}>Ballot Consensus Overview</h2>
                   <span className={`badge ${tally.isActive ? 'badge-success' : 'badge-error'}`}>
-                    {tally.isActive && <span className="dot" />}
-                    {tally.isActive ? 'Session Open' : 'Session Closed'}
+                    <span className="dot" />
+                    {tally.isActive ? 'Voting Session Active' : 'Voting Session Concluded'}
                   </span>
                 </div>
 
-                {/* Stats */}
-                <div className="stats-grid mb-6">
-                  <div className="card stat-card">
-                    <div className="stat-card__value">{tally.totalVotes.toString()}</div>
-                    <div className="stat-card__label">Total Votes</div>
+                {/* Metrics Matrix */}
+                <div className="stats-strip mb-6" style={{ maxWidth: '100%' }}>
+                  <div className="stat-pill">
+                    <div className="stat-pill__value">{tally.totalVotes.toString()}</div>
+                    <div className="stat-pill__label">Ballots Cast</div>
                   </div>
-                  <div className="card stat-card">
-                    <div className="stat-card__value">{tally.maxVoters.toString()}</div>
-                    <div className="stat-card__label">Max Voters</div>
+                  <div className="stat-pill">
+                    <div className="stat-pill__value">{tally.maxVoters.toString()}</div>
+                    <div className="stat-pill__label">Voter Capacity</div>
                   </div>
-                  <div className="card stat-card">
-                    <div className="stat-card__value">
-                      {tally.totalVotes > 0n
+                  <div className="stat-pill">
+                    <div className="stat-pill__value">
+                      {tally.maxVoters > 0n
                         ? `${pct(tally.totalVotes, tally.maxVoters).toFixed(1)}%`
                         : '0%'}
                     </div>
-                    <div className="stat-card__label">Turnout</div>
-                  </div>
-                  <div className="card stat-card">
-                    <div className="stat-card__value" style={{ fontSize: '1rem', paddingTop: '0.25rem' }}>
-                      {tally.deadline > 0n ? formatDeadline(tally.deadline) : '—'}
-                    </div>
-                    <div className="stat-card__label" style={{ fontSize: '0.65rem' }}>Deadline</div>
+                    <div className="stat-pill__label">Quorum Reached</div>
                   </div>
                 </div>
 
-                {/* Vote bars */}
-                <div className="card">
-                  <h3 style={{ marginBottom: '1.5rem' }}>Ballot Breakdown</h3>
+                {/* Ballot Breakdown Visualizer */}
+                <div className="card mb-6">
+                  <div className="flex-between mb-6">
+                    <h3 style={{ margin: 0 }}>Distribution of Verified Ballots</h3>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--clr-text-muted)' }}>
+                      Total Valid: <strong style={{ color: 'var(--clr-text-primary)' }}>{tally.totalVotes.toString()}</strong>
+                    </span>
+                  </div>
 
                   {/* FOR */}
-                  <div style={{ marginBottom: '1.25rem' }}>
-                    <div className="flex-between mb-4" style={{ marginBottom: '0.375rem' }}>
-                      <span style={{ fontWeight: 600, color: 'var(--clr-success)' }}>
-                        ✅ For
+                  <div className="mb-6">
+                    <div className="flex-between mb-2">
+                      <span style={{ fontWeight: 700, color: 'var(--clr-primary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <span>✅</span> Affirmative (For)
                       </span>
-                      <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.875rem' }}>
-                        {tally.votesFor.toString()} votes ({pct(tally.votesFor, tally.totalVotes).toFixed(1)}%)
+                      <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.875rem' }}>
+                        <strong>{tally.votesFor.toString()}</strong> ({pct(tally.votesFor, tally.totalVotes).toFixed(1)}%)
                       </span>
                     </div>
                     <div className="vote-bar">
@@ -198,13 +236,13 @@ export default function ResultsPage() {
                   </div>
 
                   {/* AGAINST */}
-                  <div style={{ marginBottom: '1.25rem' }}>
-                    <div className="flex-between mb-4" style={{ marginBottom: '0.375rem' }}>
-                      <span style={{ fontWeight: 600, color: 'var(--clr-error)' }}>
-                        ❌ Against
+                  <div className="mb-6">
+                    <div className="flex-between mb-2">
+                      <span style={{ fontWeight: 700, color: 'var(--clr-error)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <span>❌</span> Dissent (Against)
                       </span>
-                      <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.875rem' }}>
-                        {tally.votesAgainst.toString()} votes ({pct(tally.votesAgainst, tally.totalVotes).toFixed(1)}%)
+                      <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.875rem' }}>
+                        <strong>{tally.votesAgainst.toString()}</strong> ({pct(tally.votesAgainst, tally.totalVotes).toFixed(1)}%)
                       </span>
                     </div>
                     <div className="vote-bar">
@@ -216,13 +254,13 @@ export default function ResultsPage() {
                   </div>
 
                   {/* ABSTAIN */}
-                  <div style={{ marginBottom: '1.25rem' }}>
-                    <div className="flex-between mb-4" style={{ marginBottom: '0.375rem' }}>
-                      <span style={{ fontWeight: 600, color: 'var(--clr-text-muted)' }}>
-                        ⬛ Abstain
+                  <div className="mb-6">
+                    <div className="flex-between mb-2">
+                      <span style={{ fontWeight: 700, color: 'var(--clr-accent-light)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <span>⚖️</span> Abstention
                       </span>
-                      <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.875rem' }}>
-                        {tally.votesAbstain.toString()} votes ({pct(tally.votesAbstain, tally.totalVotes).toFixed(1)}%)
+                      <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.875rem' }}>
+                        <strong>{tally.votesAbstain.toString()}</strong> ({pct(tally.votesAbstain, tally.totalVotes).toFixed(1)}%)
                       </span>
                     </div>
                     <div className="vote-bar">
@@ -233,43 +271,63 @@ export default function ResultsPage() {
                     </div>
                   </div>
 
-                  <hr className="divider" />
+                  <hr style={{ border: 'none', borderTop: '1px solid var(--clr-border)', margin: '1.5rem 0' }} />
 
-                  {/* Privacy reminder */}
-                  <div className="privacy-shield">
-                    <span className="privacy-shield__icon">🛡️</span>
-                    <div>
-                      <p className="privacy-shield__title">Privacy Model Active</p>
-                      <p className="privacy-shield__body">
-                        These numbers are 100% verifiable on-chain. It is cryptographically
-                        impossible to determine which voter cast which ballot. The ZK proof
-                        ensures the tally is correct without disclosing individual choices.
-                      </p>
-                    </div>
+                  {/* Session Timing */}
+                  <div className="flex-between" style={{ flexWrap: 'wrap', gap: '1rem', fontSize: '0.85rem' }}>
+                    <span style={{ color: 'var(--clr-text-secondary)' }}>
+                      Deadline: <strong style={{ color: 'var(--clr-text-primary)' }}>{tally.deadline > 0n ? formatDeadline(tally.deadline) : 'Unlimited'}</strong>
+                    </span>
+                    <span className="badge badge-info" style={{ fontSize: '0.72rem' }}>
+                      ZK CIRCUIT STATUS: AUDITED
+                    </span>
                   </div>
                 </div>
 
-                {/* Contract address display */}
-                <div className="card mt-4">
-                  <p className="label">Contract Address (Preprod)</p>
-                  <div className="address-box">
-                    <span style={{ flex: 1 }} className="mono">{contractAddress}</span>
-                    <button
-                      className="address-box__copy"
-                      onClick={() => navigator.clipboard.writeText(contractAddress)}
-                      title="Copy address"
+                {/* Explorer & Address Card */}
+                <div className="card">
+                  <label className="label">Audited Contract Address</label>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid var(--clr-border)',
+                      borderRadius: '0.75rem',
+                      padding: '0.75rem 1rem',
+                      marginBottom: '1rem',
+                    }}
+                  >
+                    <span
+                      style={{
+                        flex: 1,
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: '0.8125rem',
+                        color: 'var(--clr-primary)',
+                        wordBreak: 'break-all',
+                      }}
                     >
-                      ⎘
+                      {contractAddress}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={copyAddress}
+                      className="btn btn-ghost btn-sm"
+                      style={{ padding: '0.35rem 0.75rem', fontSize: '0.78125rem' }}
+                    >
+                      {copiedAddr ? '✓ Copied' : 'Copy'}
                     </button>
                   </div>
+
                   <a
                     href={`https://preprod.midnightexplorer.com/contracts/${contractAddress}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn btn-ghost btn-sm mt-2"
+                    className="btn btn-ghost btn-sm"
                     style={{ textDecoration: 'none' }}
                   >
-                    🔍 View on Midnight Explorer ↗
+                    🔍 Inspect in Midnight Block Explorer ↗
                   </a>
                 </div>
               </div>

@@ -6,6 +6,7 @@ import { Contract, pureCircuits } from '../managed/contract/index.js';
 import { useWallet } from '../contexts/WalletContext';
 import { waitForContractDeployment } from '../lib/midnight';
 import WalletButton from '../components/WalletButton';
+import { Link } from 'react-router-dom';
 
 function getCompiledContract() {
   const dummyWitnesses = {
@@ -121,11 +122,28 @@ export default function AdminPage() {
   if (!isConnected) {
     return (
       <div className="page">
-        <div className="container" style={{ maxWidth: 640, textAlign: 'center', paddingTop: '4rem' }}>
-          <p style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚙️</p>
-          <h2 style={{ marginBottom: '0.75rem' }}>Admin Portal</h2>
-          <p style={{ marginBottom: '1.5rem' }}>
-            Connect your 1AM wallet with admin privileges to deploy and manage the NoxBallot contract.
+        <div className="container" style={{ maxWidth: 640, textAlign: 'center', paddingTop: '3rem' }}>
+          <div
+            style={{
+              width: 64,
+              height: 64,
+              borderRadius: '50%',
+              background: 'rgba(139, 92, 246, 0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 1.5rem',
+              color: 'var(--clr-accent-light)',
+            }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+          </div>
+          <h2 style={{ marginBottom: '0.75rem' }}>Governance Terminal</h2>
+          <p style={{ marginBottom: '2rem', color: 'var(--clr-text-secondary)' }}>
+            Connect an authorized 1AM wallet on Midnight Preprod to deploy or adjust voting parameters.
           </p>
           <WalletButton />
         </div>
@@ -135,26 +153,57 @@ export default function AdminPage() {
 
   return (
     <div className="page">
-      <div className="container" style={{ maxWidth: 680 }}>
-        <div style={{ marginBottom: '2rem', animation: 'fadeInDown 0.5s ease both' }}>
-          <p className="section-header__eyebrow">Administration</p>
-          <h1>Admin Portal</h1>
+      <div className="container" style={{ maxWidth: 740 }}>
+        {/* Header */}
+        <div style={{ marginBottom: '2.5rem' }} className="animate-fade-down">
+          <p className="section-header__eyebrow">ADMINISTRATION · PROTOCOL CONTROL</p>
+          <h1>Governance Terminal</h1>
           <p>
-            Deploy a new voting contract or update an existing session's parameters.
-            Admin operations authenticate via private key — the secret never leaves the ZK proof.
+            Deploy a sovereign NoxBallot contract or update existing session parameters.
+            Admin keys authenticate via private ZK witness — secrets never leave the proof.
           </p>
         </div>
 
         {/* Deploy section */}
         <div className="card mb-6 animate-fade-up">
-          <h3 style={{ marginBottom: '1.5rem' }}>🚀 Deploy New Voting Contract</h3>
+          <div className="flex-between mb-4">
+            <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>🚀</span> Deploy Sovereign Ballot Contract
+            </h3>
+            <span className="badge badge-accent" style={{ fontSize: '0.72rem' }}>
+              Midnight Preprod L1
+            </span>
+          </div>
 
+          {/* Voter Cap Preset Chips */}
           <div className="field">
-            <label className="label" htmlFor="voter-cap-input">Maximum Voters</label>
+            <div className="flex-between">
+              <label className="label" htmlFor="voter-cap-input">Voter Capacity Limit</label>
+              <div className="flex gap-2 mb-2">
+                {['100', '500', '2500', '10000'].map((cap) => (
+                  <button
+                    key={cap}
+                    type="button"
+                    onClick={() => setVoterCap(cap)}
+                    className="btn btn-ghost btn-sm"
+                    style={{
+                      padding: '0.2rem 0.55rem',
+                      fontSize: '0.72rem',
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      borderColor: voterCap === cap ? 'var(--clr-primary)' : 'var(--clr-border)',
+                      color: voterCap === cap ? 'var(--clr-primary)' : 'var(--clr-text-muted)',
+                    }}
+                  >
+                    {cap}
+                  </button>
+                ))}
+              </div>
+            </div>
             <input
               id="voter-cap-input"
               type="number"
               className="input"
+              style={{ fontFamily: "'IBM Plex Mono', monospace" }}
               value={voterCap}
               onChange={(e) => setVoterCap(e.target.value)}
               min="1"
@@ -162,12 +211,35 @@ export default function AdminPage() {
             />
           </div>
 
+          {/* Days Open Preset Chips */}
           <div className="field">
-            <label className="label" htmlFor="days-open-input">Days Voting Stays Open</label>
+            <div className="flex-between">
+              <label className="label" htmlFor="days-open-input">Voting Window Duration (Days)</label>
+              <div className="flex gap-2 mb-2">
+                {['1', '7', '14', '30', '90'].map((d) => (
+                  <button
+                    key={d}
+                    type="button"
+                    onClick={() => setDaysOpen(d)}
+                    className="btn btn-ghost btn-sm"
+                    style={{
+                      padding: '0.2rem 0.55rem',
+                      fontSize: '0.72rem',
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      borderColor: daysOpen === d ? 'var(--clr-primary)' : 'var(--clr-border)',
+                      color: daysOpen === d ? 'var(--clr-primary)' : 'var(--clr-text-muted)',
+                    }}
+                  >
+                    {d}d
+                  </button>
+                ))}
+              </div>
+            </div>
             <input
               id="days-open-input"
               type="number"
               className="input"
+              style={{ fontFamily: "'IBM Plex Mono', monospace" }}
               value={daysOpen}
               onChange={(e) => setDaysOpen(e.target.value)}
               min="1"
@@ -176,53 +248,97 @@ export default function AdminPage() {
           </div>
 
           {status === 'deployed' && deployedAddress ? (
-            <div className="animate-fade-up">
+            <div className="animate-fade-up mt-4">
               <div className="status-message status-message--success mb-4">
                 <span>✅</span>
-                <strong>Contract deployed and indexed!</strong>
+                <div>
+                  <strong>Contract deployed & indexed on Midnight!</strong>
+                  <p style={{ margin: '0.25rem 0 0', fontSize: '0.8125rem' }}>
+                    The contract is immediately available for secret ballot casting.
+                  </p>
+                </div>
               </div>
-              <p className="label">Contract Address</p>
-              <div className="address-box mb-4">
-                <span className="mono" style={{ flex: 1 }}>{deployedAddress}</span>
+
+              <label className="label">Deployed Contract Identifier</label>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  background: 'rgba(0, 0, 0, 0.4)',
+                  border: '1px solid rgba(0, 245, 160, 0.3)',
+                  borderRadius: '0.75rem',
+                  padding: '0.75rem 1rem',
+                  marginBottom: '1rem',
+                }}
+              >
+                <span
+                  style={{
+                    flex: 1,
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: '0.8125rem',
+                    color: 'var(--clr-primary)',
+                    wordBreak: 'break-all',
+                  }}
+                >
+                  {deployedAddress}
+                </span>
                 <button
-                  className="address-box__copy"
+                  type="button"
+                  className="btn btn-ghost btn-sm"
                   onClick={() => {
                     navigator.clipboard.writeText(deployedAddress);
                     setCopied(true);
-                    setTimeout(() => setCopied(false), 1800);
+                    setTimeout(() => setCopied(false), 2000);
                   }}
                 >
-                  {copied ? '✓' : '⎘'}
+                  {copied ? '✓' : 'Copy'}
                 </button>
               </div>
-              <a
-                href={`https://preprod.midnightexplorer.com/contracts/${deployedAddress}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-ghost btn-sm"
-                style={{ textDecoration: 'none' }}
-              >
-                🔍 View on Midnight Explorer ↗
-              </a>
+
+              <div className="flex gap-4">
+                <Link to="/vote" className="btn btn-primary btn-sm" style={{ flex: 1 }}>
+                  Open Ballot Booth
+                </Link>
+                <a
+                  href={`https://preprod.midnightexplorer.com/contracts/${deployedAddress}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-ghost btn-sm"
+                  style={{ textDecoration: 'none' }}
+                >
+                  View on Midnight Explorer ↗
+                </a>
+              </div>
             </div>
           ) : (
             <>
               {status === 'error' && errorMsg && (
-                <div className="status-message status-message--error mb-4">
+                <div className="status-message status-message--error mb-4 animate-fade-up">
                   <span>⚠️</span>
-                  <pre style={{ margin: 0, fontSize: '0.75rem', whiteSpace: 'pre-wrap' }}>{errorMsg}</pre>
+                  <pre
+                    style={{
+                      margin: 0,
+                      fontSize: '0.75rem',
+                      whiteSpace: 'pre-wrap',
+                      fontFamily: "'IBM Plex Mono', monospace",
+                    }}
+                  >
+                    {errorMsg}
+                  </pre>
                 </div>
               )}
+
               <button
                 id="deploy-contract-btn"
                 onClick={handleDeploy}
                 disabled={status === 'deploying'}
-                className="btn btn-primary w-full"
+                className="btn btn-primary w-full mt-2"
               >
                 {status === 'deploying' ? (
                   <>
                     <span className="spinner" />
-                    Deploying… Approve in your 1AM wallet
+                    Deploying Contract… Approve in 1AM
                   </>
                 ) : (
                   '🚀 Deploy NoxBallot Contract'
@@ -235,20 +351,25 @@ export default function AdminPage() {
         {/* Update session section */}
         {deployedAddress && (
           <div className="card animate-fade-up" style={{ animationDelay: '0.1s' }}>
-            <h3 style={{ marginBottom: '1.5rem' }}>⚙️ Update Voting Session</h3>
+            <h3 style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>⚙️</span> Manage Session Parameters
+            </h3>
 
             <div className="field">
-              <label className="label" htmlFor="admin-sk-input">Admin Secret Key (hex)</label>
+              <label className="label" htmlFor="admin-sk-input">
+                Admin Secret Key (Private Witness)
+              </label>
               <input
                 id="admin-sk-input"
                 type="password"
                 className="input"
+                style={{ fontFamily: "'IBM Plex Mono', monospace" }}
                 value={adminSk}
                 onChange={(e) => setAdminSk(e.target.value)}
-                placeholder="Your 64-char hex admin secret (never transmitted)"
+                placeholder="64-character hex secret key (defaults to demo zeros)"
               />
-              <p className="text-muted mt-1" style={{ fontSize: '0.8125rem' }}>
-                This stays inside the ZK circuit — never goes on-chain.
+              <p className="text-muted mt-2" style={{ fontSize: '0.8125rem' }}>
+                Executed inside the private ZK circuit — the raw secret key is never published on-chain.
               </p>
             </div>
 
@@ -256,32 +377,34 @@ export default function AdminPage() {
               <label className="label">Session Status</label>
               <div style={{ display: 'flex', gap: '0.75rem' }}>
                 <button
+                  type="button"
                   id="session-open-btn"
                   onClick={() => setSessionOpen(true)}
                   className={`btn ${sessionOpen ? 'btn-primary' : 'btn-ghost'} btn-sm`}
                 >
-                  Open
+                  ✓ Open Session
                 </button>
                 <button
+                  type="button"
                   id="session-close-btn"
                   onClick={() => setSessionOpen(false)}
                   className={`btn ${!sessionOpen ? 'btn-danger' : 'btn-ghost'} btn-sm`}
                 >
-                  Close
+                  ✕ Close Session
                 </button>
               </div>
             </div>
 
             {updateStatus === 'done' && (
-              <div className="status-message status-message--success mb-4">
+              <div className="status-message status-message--success mb-4 animate-fade-up">
                 <span>✅</span>
-                <strong>Session updated successfully!</strong>
+                <strong>Voting session parameters successfully updated on-chain!</strong>
               </div>
             )}
             {updateStatus === 'error' && errorMsg && (
-              <div className="status-message status-message--error mb-4">
+              <div className="status-message status-message--error mb-4 animate-fade-up">
                 <span>⚠️</span>
-                <span>{errorMsg}</span>
+                <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.8rem' }}>{errorMsg}</span>
               </div>
             )}
 
@@ -294,10 +417,10 @@ export default function AdminPage() {
               {updateStatus === 'updating' ? (
                 <>
                   <span className="spinner" />
-                  Updating… Approve in 1AM
+                  Updating On-Chain State… Approve in 1AM
                 </>
               ) : (
-                '⚙️ Update Session'
+                'Commit Session Changes'
               )}
             </button>
           </div>

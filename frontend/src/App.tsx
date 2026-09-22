@@ -31,17 +31,24 @@ export default function App() {
           </Routes>
         </main>
         <footer className="footer">
-          <p>
-            NoxBallot — Private Voting on{' '}
-            <a
-              href="https://midnight.network"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Midnight Network
-            </a>{' '}
-            · Cast in shadow. Counted in light.
-          </p>
+          <div className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700 }}>
+              <span style={{ color: 'var(--clr-primary)' }}>●</span>
+              <span>NOXBALLOT</span>
+              <span style={{ color: 'var(--clr-text-muted)' }}>— Confidential Governance</span>
+            </div>
+            <p style={{ margin: 0, fontSize: '0.8125rem' }}>
+              Built with zero-knowledge Compact circuits on{' '}
+              <a
+                href="https://midnight.network"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Midnight Network
+              </a>{' '}
+              · Cast in shadow. Counted in light.
+            </p>
+          </div>
         </footer>
       </WalletProvider>
     </BrowserRouter>

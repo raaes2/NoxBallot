@@ -29,27 +29,41 @@ export default function WalletButton({ className = '' }: Props) {
 
   if (isConnected && address) {
     return (
-      <div className={`flex gap-2 ${className}`}>
+      <div className={`flex gap-2 items-center ${className}`}>
         <button
           id="wallet-address-btn"
           onClick={handleCopy}
           className="btn btn-ghost btn-sm flex gap-2"
-          title="Click to copy address"
+          title="Click to copy Midnight address"
+          style={{ padding: '0.4rem 0.85rem' }}
         >
-          <span className="badge badge-success" style={{ padding: '0.15rem 0.5rem', fontSize: '0.7rem' }}>
+          <span
+            className="badge badge-success"
+            style={{ padding: '0.15rem 0.5rem', fontSize: '0.72rem', letterSpacing: '0.02em' }}
+          >
             <span className="dot" />
-            {walletType ? walletLabel[walletType] ?? walletType : 'Connected'}
+            {walletType ? walletLabel[walletType] ?? walletType : '1AM'}
           </span>
-          <span className="wallet-btn__address">
-            {address.slice(0, 8)}…{address.slice(-6)}
+          <span
+            style={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: '0.8rem',
+              fontWeight: 600,
+              color: 'var(--clr-text-primary)',
+            }}
+          >
+            {address.slice(0, 6)}…{address.slice(-4)}
           </span>
-          <span style={{ fontSize: '0.8rem' }}>{copied ? '✓' : '⎘'}</span>
+          <span style={{ fontSize: '0.75rem', color: copied ? 'var(--clr-primary)' : 'var(--clr-text-muted)' }}>
+            {copied ? '✓' : '⧉'}
+          </span>
         </button>
         <button
           id="wallet-disconnect-btn"
           onClick={disconnect}
           className="btn btn-ghost btn-sm btn-icon"
           title="Disconnect wallet"
+          style={{ width: '2rem', height: '2rem', borderRadius: '50%' }}
         >
           ✕
         </button>
@@ -75,7 +89,7 @@ export default function WalletButton({ className = '' }: Props) {
         rel="noopener noreferrer"
         className={`btn btn-ghost btn-sm ${className}`}
       >
-        🔌 Install 1AM
+        Install 1AM
       </a>
     );
   }
@@ -93,7 +107,13 @@ export default function WalletButton({ className = '' }: Props) {
           Connecting…
         </>
       ) : (
-        <>🔗 Connect Wallet</>
+        <>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <rect x="2" y="5" width="20" height="14" rx="2" />
+            <path d="M16 12h.01" strokeWidth="3" />
+          </svg>
+          Connect Wallet
+        </>
       )}
     </button>
   );
