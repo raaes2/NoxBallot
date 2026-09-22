@@ -48,6 +48,36 @@ The ZK proof guarantees — without revealing any private input:
 
 ---
 
+## 💻 Tech Stack
+
+NoxBallot is architected across multiple layers for client-side zero-knowledge execution, privacy-preserving state management, and modern responsive UI:
+
+### 🛡️ Cryptography & Blockchain Core
+- **[Midnight Network](https://midnight.network/)**: Data-protection layer-1 blockchain (Preprod & Preview networks) providing native programmable data privacy.
+- **[Compact Language (v0.31.0)](https://github.com/midnightntwrk/compactc)**: Domain-specific smart contract & ZK circuit language compiling confidential verification logic into zero-knowledge proving keys.
+- **Midnight JS SDK v4.x**: `@midnight-ntwrk/compact-js`, `@midnight-ntwrk/compact-runtime`, `@midnight-ntwrk/midnight-js-contracts`, `@midnight-ntwrk/ledger-v8`.
+- **WebAssembly (WASM)**: Client-side cryptographic proof generation running directly inside the user's browser runtime.
+
+### 🎨 Frontend & Design System
+- **[React 19](https://react.dev/)**: Modern declarative component architecture.
+- **[TypeScript 5.7](https://www.typescriptlang.org/)**: Strict static typing across contract bindings, witnesses, and UI states.
+- **[Vite 5.4](https://vite.dev/)**: High-performance bundler and dev server equipped with `vite-plugin-wasm` and `vite-plugin-top-level-await`.
+- **[React Router v7](https://reactrouter.com/)**: Client-side single-page application navigation.
+- **Custom Vanilla CSS Design System**: Bespoke Obsidian & Luminescent Mint/Emerald aesthetic with custom glassmorphism, responsive tactile components, and fluid micro-animations (pure CSS3, zero external CSS runtime overhead).
+- **Typography**: Google Fonts — **Space Grotesk** (Display/Headings), **Plus Jakarta Sans** (Interface/Body), and **IBM Plex Mono** (Cryptographic Hashes & Nullifiers).
+
+### 🔑 Wallet & Connectivity
+- **1AM Wallet Extension**: Primary Midnight DApp connector for secure browser-side key management and transaction approval.
+- **Pluggable DApp Connector API**: Multi-wallet detection supporting 1AM, Lace, and Nightly wallet extensions.
+
+### 🧪 Tooling, DevOps & Infrastructure
+- **[Vitest](https://vitest.dev/) & Node.js**: Integration test suites verifying contract deployment, ballot casting, and anti-double-vote nullifiers.
+- **Docker & Docker Compose**: Local development sandbox orchestrating `midnight-node`, `proof-server`, and `indexer`.
+- **GitHub Actions**: Continuous integration running contract compilation, automated tests, and production build checks.
+- **Vercel**: Global edge hosting configured with custom SPA routing and Cross-Origin headers for WebAssembly execution.
+
+---
+
 ## 🚀 Live Demo
 
 - **App:** [https://nox-ballot.vercel.app/](https://nox-ballot.vercel.app/)
