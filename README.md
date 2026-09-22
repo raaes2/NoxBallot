@@ -20,6 +20,23 @@ NoxBallot is a privacy-first voting dApp built on [Midnight Network](https://mid
 
 ---
 
+## 🚀 Live Demo
+
+- **App:** [https://nox-ballot.vercel.app/](https://nox-ballot.vercel.app/)
+- **Contract (Preprod):** `mn_addr_preprod1fjw64hh5veuayhl782sxggpq8jfp0vq0zvv3cvz94nv7cnzu9clqp3zk9e`
+- **Explorer:** [Midnight Explorer Link](https://preprod.midnightexplorer.com/contracts/mn_addr_preprod1fjw64hh5veuayhl782sxggpq8jfp0vq0zvv3cvz94nv7cnzu9clqp3zk9e)
+- **Demo Video:** [Watch the Walkthrough](https://drive.google.com/file/d/1fGqSowXylbCGQPRYkjqmRzys3oft0pat/view?usp=sharing)
+
+## 📸 Screenshots
+
+![Home](docs/assets/home.png)
+![Features](docs/assets/features.png)
+![Governance](docs/assets/admin.png)
+![Vote](docs/assets/vote.png)
+![Results](docs/assets/results.png)
+
+---
+
 ## 🗳️ Product Idea
 
 NoxBallot addresses the fundamental paradox of on-chain governance: **transparent blockchains make private voting structurally impossible**. Every conventional chain exposes who voted for what. NoxBallot solves this using Midnight's zero-knowledge proof system to implement **Private Voting** — users prove they are eligible and cast a ballot, but the choice itself is protected inside a ZK circuit. Only an anonymous nullifier (a cryptographic commitment) and the aggregate tally are written to the ledger. This enables trustless, verifiable elections where the outcome is public and tamper-proof, but every individual ballot is mathematically sealed.
@@ -106,14 +123,6 @@ NoxBallot is architected across multiple layers for client-side zero-knowledge e
 - **Docker & Docker Compose**: Local development sandbox orchestrating `midnight-node`, `proof-server`, and `indexer`.
 - **GitHub Actions**: Continuous integration running contract compilation, automated tests, and production build checks.
 - **Vercel**: Global edge hosting configured with custom SPA routing and Cross-Origin headers for WebAssembly execution.
-
----
-
-## 🚀 Live Demo
-
-- **App:** [https://nox-ballot.vercel.app/](https://nox-ballot.vercel.app/)
-- **Contract (Preprod):** `mn_addr_preprod1fjw64hh5veuayhl782sxggpq8jfp0vq0zvv3cvz94nv7cnzu9clqp3zk9e`
-- **Explorer:** [Midnight Explorer Link](https://preprod.midnightexplorer.com/contracts/mn_addr_preprod1fjw64hh5veuayhl782sxggpq8jfp0vq0zvv3cvz94nv7cnzu9clqp3zk9e)
 
 ---
 
