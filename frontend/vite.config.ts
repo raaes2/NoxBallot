@@ -13,6 +13,9 @@ export default defineConfig({
   define: {
     global: 'globalThis',
   },
+  build: {
+    target: 'esnext',
+  },
   optimizeDeps: {
     exclude: ['@midnight-ntwrk/ledger-v8'],
   },
