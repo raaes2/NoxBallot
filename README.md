@@ -1,306 +1,272 @@
 # NoxBallot
 
-[![NoxBallot CI](https://github.com/raaes2/NoxBallot/actions/workflows/ci.yaml/badge.svg)](https://github.com/raaes2/NoxBallot/actions/workflows/ci.yaml)
-[![Midnight Network](https://img.shields.io/badge/Midnight-Network_L1-00F5A0?style=flat-square&logo=circle&logoColor=black)](https://midnight.network)
-[![Compact ZK](https://img.shields.io/badge/Compact-ZK_Circuits-8B5CF6?style=flat-square&logo=shield&logoColor=white)](https://github.com/midnightntwrk/compactc)
-[![React 19](https://img.shields.io/badge/React-19-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://react.dev)
-[![TypeScript 5](https://img.shields.io/badge/TypeScript-5.7-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev)
-[![WebAssembly](https://img.shields.io/badge/WebAssembly-WASM-654FF0?style=flat-square&logo=webassembly&logoColor=white)](https://webassembly.org)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com)
-[![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://nox-ballot.vercel.app/)
+**Privacy-Preserving Voting on the Midnight Network**
 
-<p align="left">
-  <img src="https://skillicons.dev/icons?i=react,ts,vite,wasm,nodejs,docker,githubactions,vercel" alt="NoxBallot Tech Stack Icons" />
-</p>
 
-> **Cast in shadow. Counted in light.**
-
-NoxBallot is a privacy-first voting dApp built on [Midnight Network](https://midnight.network). Cast anonymous ballots with cryptographic guarantees — your vote choice, identity, and wallet address **never appear on-chain**. Only a verifiable tally does.
+[![Midnight Network](https://img.shields.io/badge/Network-Midnight-blueviolet?style=for-the-badge)](https://midnight.network)
+[![Language](https://img.shields.io/badge/Language-Compact-orange?style=for-the-badge)](https://midnight.network)
+[![Tested With](https://img.shields.io/badge/Tested%20With-Vitest-yellow?style=for-the-badge)](https://vitest.dev)
+[![State](https://img.shields.io/badge/Level-4%20Complete-success?style=for-the-badge)](#)
+[![CI](https://github.com/raaes2/NoxBallot/actions/workflows/ci.yaml/badge.svg)](https://github.com/raaes2/NoxBallot/actions/workflows/ci.yaml)
+[![Deploy on Vercel](https://img.shields.io/badge/Deploy-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/new/clone?repository-url=https://github.com/raaes2/NoxBallot&root=frontend)
+[![X (Twitter) Follow](https://img.shields.io/twitter/follow/raeessj?style=for-the-badge)](https://x.com/raeessj)
 
 ---
 
-## 🚀 Live Demo
+## Abstract
 
-- **App:** [https://nox-ballot.vercel.app/](https://nox-ballot.vercel.app/)
-- **Contract (Preprod):** `mn_addr_preprod1fjw64hh5veuayhl782sxggpq8jfp0vq0zvv3cvz94nv7cnzu9clqp3zk9e`
-- **Explorer:** [Midnight Explorer Link](https://preprod.midnightexplorer.com/contracts/mn_addr_preprod1fjw64hh5veuayhl782sxggpq8jfp0vq0zvv3cvz94nv7cnzu9clqp3zk9e)
-- **Demo Video:** [Watch the Walkthrough](https://drive.google.com/file/d/1fGqSowXylbCGQPRYkjqmRzys3oft0pat/view?usp=sharing)
-
-## 📸 Screenshots
-
-![Home](docs/assets/home.png)
-![Features](docs/assets/features.png)
-![Governance](docs/assets/admin.png)
-![Vote](docs/assets/vote.png)
-![Results](docs/assets/results.png)
+NoxBallot is a decentralized application (dApp) engineered on the **Midnight Network** utilizing the **Compact** smart contract language. The platform serves as a Zero-Knowledge (ZK) private voting protocol. It allows voters to cryptographically prove that they are eligible and have cast a valid ballot without ever exposing their vote choice, identity, or raw sensitive data to centralized portals, voting boards, or the public blockchain ledger.
 
 ---
 
-## 🗳️ Product Idea
+## Table of Contents
 
-NoxBallot addresses the fundamental paradox of on-chain governance: **transparent blockchains make private voting structurally impossible**. Every conventional chain exposes who voted for what. NoxBallot solves this using Midnight's zero-knowledge proof system to implement **Private Voting** — users prove they are eligible and cast a ballot, but the choice itself is protected inside a ZK circuit. Only an anonymous nullifier (a cryptographic commitment) and the aggregate tally are written to the ledger. This enables trustless, verifiable elections where the outcome is public and tamper-proof, but every individual ballot is mathematically sealed.
-
----
-
-## 🔐 Privacy Model
-
-NoxBallot's privacy guarantee is enforced at the cryptographic level — not by policy.
-
-### What an observer **CAN** see (public ledger state)
-
-| Observable | Description |
-|---|---|
-| `total_votes` | How many ballots have been cast |
-| `votes_for` | Count of "For" votes |
-| `votes_against` | Count of "Against" votes |
-| `votes_abstain` | Count of abstentions |
-| `max_voters` | Voter cap set by admin |
-| `is_active` | Whether voting is open |
-| `nullifiers` | Set of anonymous voter commitments |
-| `deadline` | When voting ends |
-
-### What an observer **CANNOT** see (private witnesses)
-
-| Hidden | Description |
-|---|---|
-| `voter_id` | The voter's unique identity |
-| `eligibility_key` | The voter's proof of eligibility |
-| `vote_choice` | Whether the voter chose For/Against/Abstain |
-| Admin secret key | The key used to authenticate admin operations |
-
-The ZK proof guarantees — without revealing any private input:
-1. The voter is eligible (knows a valid credential)
-2. The voter has not voted before (nullifier uniqueness enforced)
-3. The vote choice is valid (0, 1, or 2)
-4. The correct tally counter is incremented
+1. [Official Submission Links](#official-submission-links)
+2. [Architectural Overview](#architectural-overview)
+3. [Zero-Knowledge Privacy Model](#zero-knowledge-privacy-model)
+4. [Smart Contract Implementation](#smart-contract-implementation)
+5. [Hackathon Progression (Levels 1-4)](#hackathon-progression-levels-1-4)
+6. [Project Showcase & Verification Proofs](#project-showcase--verification-proofs)
+7. [Local Development & Setup Guide](#local-development--setup-guide)
 
 ---
 
-## 💻 Tech Stack
+## Official Submission Links
 
-<p align="left">
-  <img src="https://skillicons.dev/icons?i=react,ts,vite,wasm,nodejs,docker,githubactions,vercel" alt="NoxBallot Tech Stack Icons" />
-</p>
-
-NoxBallot is architected across multiple layers for client-side zero-knowledge execution, privacy-preserving state management, and modern responsive UI:
-
-### 🛡️ Cryptography & Blockchain Core
-[![Midnight](https://img.shields.io/badge/Midnight_Network-Preprod-00F5A0?style=flat-square&logo=circle&logoColor=black)](https://midnight.network/)
-[![Compact](https://img.shields.io/badge/Compact-0.31.0-8B5CF6?style=flat-square)](https://github.com/midnightntwrk/compactc)
-[![WebAssembly](https://img.shields.io/badge/WebAssembly-WASM-654FF0?style=flat-square&logo=webassembly&logoColor=white)](https://webassembly.org/)
-
-- **[Midnight Network](https://midnight.network/)**: Data-protection layer-1 blockchain (Preprod & Preview networks) providing native programmable data privacy.
-- **[Compact Language (v0.31.0)](https://github.com/midnightntwrk/compactc)**: Domain-specific smart contract & ZK circuit language compiling confidential verification logic into zero-knowledge proving keys.
-- **Midnight JS SDK v4.x**: `@midnight-ntwrk/compact-js`, `@midnight-ntwrk/compact-runtime`, `@midnight-ntwrk/midnight-js-contracts`, `@midnight-ntwrk/ledger-v8`.
-- **WebAssembly (WASM)**: Client-side cryptographic proof generation running directly inside the user's browser runtime.
-
-### 🎨 Frontend & Design System
-[![React](https://img.shields.io/badge/React-19-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev/)
-[![React Router](https://img.shields.io/badge/React_Router-v7-CA4245?style=flat-square&logo=reactrouter&logoColor=white)](https://reactrouter.com/)
-
-- **[React 19](https://react.dev/)**: Modern declarative component architecture.
-- **[TypeScript 5.7](https://www.typescriptlang.org/)**: Strict static typing across contract bindings, witnesses, and UI states.
-- **[Vite 5.4](https://vite.dev/)**: High-performance bundler and dev server equipped with `vite-plugin-wasm` and `vite-plugin-top-level-await`.
-- **[React Router v7](https://reactrouter.com/)**: Client-side single-page application navigation.
-- **Custom Vanilla CSS Design System**: Bespoke Obsidian & Luminescent Mint/Emerald aesthetic with custom glassmorphism, responsive tactile components, and fluid micro-animations (pure CSS3, zero external CSS runtime overhead).
-- **Typography**: Google Fonts — **Space Grotesk** (Display/Headings), **Plus Jakarta Sans** (Interface/Body), and **IBM Plex Mono** (Cryptographic Hashes & Nullifiers).
-
-### 🔑 Wallet & Connectivity
-[![1AM](https://img.shields.io/badge/1AM_Wallet-Midnight-00F5A0?style=flat-square)](https://docs.midnight.network/develop/tutorial/using/1am-wallet)
-
-- **1AM Wallet Extension**: Primary Midnight DApp connector for secure browser-side key management and transaction approval.
-- **Pluggable DApp Connector API**: Multi-wallet detection supporting 1AM, Lace, and Nightly wallet extensions.
-
-### 🧪 Tooling, DevOps & Infrastructure
-[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
-[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI-2088FF?style=flat-square&logo=githubactions&logoColor=white)](https://github.com/features/actions)
-[![Vercel](https://img.shields.io/badge/Vercel-Deployment-000000?style=flat-square&logo=vercel&logoColor=white)](https://nox-ballot.vercel.app/)
-
-- **[Vitest](https://vitest.dev/) & Node.js**: Integration test suites verifying contract deployment, ballot casting, and anti-double-vote nullifiers.
-- **Docker & Docker Compose**: Local development sandbox orchestrating `midnight-node`, `proof-server`, and `indexer`.
-- **GitHub Actions**: Continuous integration running contract compilation, automated tests, and production build checks.
-- **Vercel**: Global edge hosting configured with custom SPA routing and Cross-Origin headers for WebAssembly execution.
+- **Live Application (Vercel):** [https://scholar-shield-ten.vercel.app/](https://scholar-shield-ten.vercel.app/)
+- **Deployed Contract (Midnight Preprod):** [5a9cd8179b54c81863309dcfacd83f8207f0fc35a1ab79cc4ff524b334c8ae1e](https://preprod.midnightexplorer.com/contracts/5a9cd8179b54c81863309dcfacd83f8207f0fc35a1ab79cc4ff524b334c8ae1e)
+- **Demo Video Presentation:** [Watch on Google Drive](https://drive.google.com/file/d/1YUe91VBOKsM_-cpF4jBO_dhbyJyNmcWX/view?usp=sharing)
+- **Public Brand Presence (X Profile):** [https://x.com/raeessj](https://x.com/raeessj)
 
 ---
 
-## 🛠️ Setup
+## Architectural Overview
 
-### Prerequisites
+NoxBallot bridges modern web infrastructure with cutting-edge cryptographic privacy networks.
 
-| Tool | Version | Install |
-|---|---|---|
-| Node.js | >= 22.0.0 | https://nodejs.org |
-| Yarn | 1.22.22 | `npm install -g yarn` |
-| Docker Desktop | Latest | https://docker.com |
-| Compact Compiler | 0.31.0 | [GitHub releases](https://github.com/midnightntwrk/compactc/releases) |
-| 1AM Wallet | Latest | Chrome Web Store |
+- **Smart Contract Layer:** Written in Compact (`noxballot.compact`), compiled to WebAssembly (WASM) and Zero-Knowledge Intermediate Representation (ZKIR). Deployed on the Midnight Preprod network.
+- **Frontend Application Layer:** Built with React, TypeScript, and Vite. Styled using a custom cyber-grid aesthetic via Tailwind CSS.
+- **Wallet Infrastructure:** Integrated with the `@midnight-ntwrk/dapp-connector-api` to interface directly with the 1AM and Lace browser extension wallets for local proof generation and transaction signing.
+- **Testing & CI/CD:** End-to-end testing utilizing Vitest and local Docker-based Midnight environments. Automated CI/CD pipelines via GitHub Actions.
 
-### Install Compact Compiler (Windows)
+---
 
-1. Download the Windows binary from https://github.com/midnightntwrk/compactc/releases (v0.31.0)
-2. Extract to `C:\compact`
-3. Add `C:\compact` to your Windows system PATH
-4. Restart your terminal
-5. Verify: `compact --version` → `compact 0.31.0`
+## Zero-Knowledge Privacy Model
 
-### Install & Run
+The core value proposition of NoxBallot is absolute data privacy for voters. 
 
+### The Traditional Vulnerability
+In legacy systems, voters must submit unencrypted votes and identities to centralized databases. These databases are prime targets for manipulation, intimidation, and breaches.
+
+### The NoxBallot ZK Solution
+NoxBallot eliminates the need for data transmission of vote choices. Verification is entirely mathematical.
+
+1. **Public State (Ledger Data):** The contract maintains the active status, total votes, and public tally (`votes_for`, `votes_against`, `votes_abstain`). These values are fully transparent and verifiable by any observer.
+2. **Private Witness (User Data):** The voter inputs their identity, eligibility key, and vote choice locally into their browser. These values are designated as "private witnesses" in the Compact circuit.
+3. **Local Proof Generation:** The voter's browser wallet runs a localized Zero-Knowledge circuit. It checks if the voter is eligible and hasn't voted before.
+4. **On-Chain Verification:** The wallet submits a cryptographic proof to the Midnight blockchain. The network validators verify the math, update the tally, and record an anonymous nullifier without ever seeing the underlying private inputs.
+
+**Observer Matrix:**
+- **Visible on-chain:** The vote tallies, total votes, anonymous nullifiers, and the fact that a valid proof was submitted.
+- **Hidden permanently:** The voter's identity, their eligibility proof, and their actual vote choice.
+
+---
+## August Submission Updates
+
+### Bug Fixes & Refactors
+
+- **Wallet Connection Leaks**: Cleans up polling intervals on disconnect.
+- **Footer Address Truncation**: Ensures contract addresses don't overflow on mobile.
+- **Mobile Navbar**: Hide text on small screens, use flex gap.
+- **Double-submit bugs**: Disabled verify button when processing.
+- **Private State Password**: Securely loaded from environment variables.
+- **Input Edge Cases**: Empty strings, negative values, overflow amounts now guarded.
+- **Custom Hooks**: Extracted logic into `useVerifySubmit`.
+- **Accessibility**: Added ARIA live regions and keyboard handlers.
+
+### Test Additions
+
+| Test | What it covers |
+|------|----------------|
+| `Passes voting when voter is fully eligible` | Verifies standard valid vote |
+| `Prevents double voting` | Tests nullifier uniqueness checks |
+| `Fails voting when session is closed` | Ensures deadline logic is respected |
+| `Fails voting with invalid choice` | Validates choice boundary checks |
+| `Client-Side Eligibility Pre-checker Tests` | Validates that client-side logic perfectly matches circuit thresholds |
+| `Proof History Utility Tests` | Ensures proofs are properly serialized, saved, and loaded from localStorage |
+
+### New Features (Mid-August Sprint)
+
+- **Analytics Dashboard Page** (`frontend/src/pages/DashboardPage.tsx`)
+  - Real-time statistics summary cards for total proofs, eligible proofs, and ineligible proofs
+  - LocalStorage-based proof history tracking with timestamps and transaction links
+  - SVG bar chart for visualizing pass/fail ratios
+  - Clear history functionality with confirmation guard
+
+- **Client-Side Eligibility Pre-checker** (`frontend/src/hooks/useEligibilityPrecheck.ts`)
+  - Simulates the Zero-Knowledge circuit locally before triggering the wallet extension
+  - Displays instant visual feedback (likely eligible, likely ineligible, invalid input)
+  - Helps users avoid paying transaction fees for obviously invalid credentials
+
+- **Live On-chain Criteria Reader** (`frontend/src/hooks/useLiveCriteria.ts`)
+  - Fetches the active contract configurations directly from the Midnight ledger
+  - Features a robust fallback mechanism to environment variables if the indexer is unavailable
+
+- **UI & UX Improvements**
+  - Added a lightweight Toast Notification system (`frontend/src/components/ToastNotification.tsx`) for transaction feedback
+  - Added an admin network guard that visually warns deployers if their wallet is connected to a local node instead of Preprod
+  - Implemented double-submit guards using React `useRef` to prevent concurrent wallet invocations
+  - Added graceful error handling for wallet connection rejections
+
+---
+
+## Smart Contract Implementation
+
+The Compact contract (`contracts/noxballot.compact`) is designed for maximum security and data minimization.
+
+```compact
+pragma language_version >= 0.22;
+import CompactStandardLibrary;
+
+export ledger admin: Bytes<32>;
+export ledger is_active: Boolean;
+export ledger deadline: Uint<64>;
+export ledger total_votes: Uint<32>;
+export ledger votes_for: Uint<32>;
+export ledger votes_against: Uint<32>;
+export ledger votes_abstain: Uint<32>;
+export ledger max_voters: Uint<32>;
+export ledger nullifiers: Set<Bytes<32>>;
+
+// The constructor utilizes disclose() to explicitly make the parameters public.
+constructor(admin_hash: Bytes<32>, expiry: Uint<64>, voter_cap: Uint<32>) {
+  admin = disclose(admin_hash);
+  deadline = disclose(expiry);
+  max_voters = disclose(voter_cap);
+  is_active = disclose(true);
+  total_votes = disclose(0);
+  votes_for = disclose(0);
+  votes_against = disclose(0);
+  votes_abstain = disclose(0);
+}
+
+// The verification circuit accepts private witnesses.
+// Because disclose() is NOT used on the choice/credential, the inputs remain mathematically shielded.
+export circuit cast_vote(): [] {
+  assert(disclose(is_active), "Voting session is closed");
+  assert(blockTimeLt(disclose(deadline)), "Voting deadline has passed");
+  assert(disclose(total_votes) < disclose(max_voters), "Voter cap reached");
+
+  const cred = voter_credential();
+  const choice = vote_choice();
+
+  const nul = make_vote_nullifier(cred.voter_id);
+  assert(!nullifiers.member(disclose(nul)), "This voter has already cast a ballot");
+  assert(choice <= 2, "Invalid vote choice");
+
+  nullifiers.insert(disclose(nul));
+  total_votes = disclose((total_votes + 1) as Uint<32>);
+
+  if (disclose(choice == 0)) { votes_for = disclose((votes_for + 1) as Uint<32>); }
+  if (disclose(choice == 1)) { votes_against = disclose((votes_against + 1) as Uint<32>); }
+  if (disclose(choice == 2)) { votes_abstain = disclose((votes_abstain + 1) as Uint<32>); }
+}
+```
+
+---
+
+## Hackathon Progression (Levels 1-4)
+
+This repository fulfills the strict progression requirements of the "New Moon to Full" Midnight Builder Journey.
+
+### Level 1: Setup & First Contract
+- **Objective:** Establish the WSL2/Docker toolchain, write the foundational Compact contract, and document the product proposal.
+- **Status:** Complete. The contract successfully compiles, generating the required `zkir` and `bzkir` proving artifacts.
+
+### Level 2: Frontend Integration
+- **Objective:** Develop a robust frontend interface and establish wallet connectivity.
+- **Status:** Complete. The application successfully interfaces with the 1AM wallet via the Midnight DApp Connector API.
+- **Deployed Contract Address (Preprod):** 
+  [5a9cd8179b54c81863309dcfacd83f8207f0fc35a1ab79cc4ff524b334c8ae1e](https://preprod.midnightexplorer.com/contracts/5a9cd8179b54c81863309dcfacd83f8207f0fc35a1ab79cc4ff524b334c8ae1e)
+
+### Level 3: Production-Grade dApp
+- **Objective:** Implement automated testing, Continuous Integration (CI/CD), and a polished user interface.
+- **Status:** Complete. Vitest suites assert both successful verification and expected failure modes. GitHub Actions workflows automatically test the contract on every push.
+
+### Level 4: MVP Goes Live
+- **Objective:** Deploy the frontend to a production CDN, finalize documentation, and establish a public brand presence.
+- **Status:** Complete.
+  - **Live Application:** [https://scholar-shield-ten.vercel.app/](https://scholar-shield-ten.vercel.app/)
+  - **Deployed Contract (Preprod):** [5a9cd8179b54c81863309dcfacd83f8207f0fc35a1ab79cc4ff524b334c8ae1e](https://preprod.midnightexplorer.com/contracts/5a9cd8179b54c81863309dcfacd83f8207f0fc35a1ab79cc4ff524b334c8ae1e)
+  - **Demo Video Presentation:** [Watch on Google Drive](https://drive.google.com/file/d/1YUe91VBOKsM_-cpF4jBO_dhbyJyNmcWX/view?usp=sharing)
+  - **Public Brand Presence (X Profile):** [https://x.com/raeessj](https://x.com/raeessj)
+
+---
+
+## Project Showcase & Verification Proofs
+
+### User Interface 
+![UI Screenshot 1](./sub%20assets/ui1.png)
+![UI Screenshot 2](./sub%20assets/ui2.png)
+![UI Screenshot 3](./sub%20assets/ui3.png)
+
+### Contract Compilation Artifacts
+![Successful Compilation](./sub%20assets/yarn%20compile%20ss.png)
+
+---
+
+## Local Development & Setup Guide
+
+For developers and auditors wishing to verify the Zero-Knowledge circuits and run the application locally, please follow these instructions carefully.
+
+### 1. System Requirements
+- **OS:** Windows Subsystem for Linux 2 (WSL2 - Ubuntu 24.04/26.04) or native Linux/macOS.
+- **Containerization:** Docker Desktop with WSL2 integration enabled.
+- **Runtime:** Node.js (v22.0.0 or higher) and Yarn package manager.
+
+### 2. Dependency Initialization
+Clone the repository and install the workspace dependencies from the root directory:
 ```bash
-# Install root dependencies
+git clone https://github.com/raaes2/NoxBallot.git
+cd NoxBallot
 yarn install
+```
 
-# Compile the Compact contract (generates contracts/managed/)
+### 3. Smart Contract Compilation
+Compile the Compact zero-knowledge circuits into intermediate representation and generate the strictly-typed TypeScript interfaces:
+```bash
+export PATH="$HOME/.local/bin:$PATH"
 yarn compile
+```
+*Note: This command populates the `contracts/managed/noxballot/` directory with the necessary prover keys and API definitions.*
 
-# Copy managed artifacts to frontend
-yarn copy:managed
-
-# Start local Docker network (proof-server + indexer + midnight-node)
+### 4. Running the Local Midnight Network and Test Suite
+To run the automated tests, you must initialize the local Midnight Docker network (which spins up a local indexer, proof-server, and blockchain node):
+```bash
 yarn env:up
-
-# In another terminal — start the frontend dev server
-cd frontend
-yarn install
-yarn dev
-```
-
-App runs at: `http://localhost:5173`
-
-### Environment Variables (Preprod/Preview)
-
-```bash
-cp .env.preprod.example .env.preprod
-# Edit .env.preprod with your wallet mnemonic
-```
-
----
-
-## 🧪 Testing
-
-### Local (Docker) — requires `yarn env:up` running
-
-```bash
-# Wait for DUST tokens to accrue in the local wallet
-npx vite-node scripts/wait-for-dust.ts
-
-# Run the full NoxBallot test suite
 yarn test:local
 ```
-
-### Preprod
-
+Once testing is complete, gracefully terminate the Docker instances to free up system resources:
 ```bash
-yarn test:preprod  # requires MIDNIGHT_PREPROD_MNEMONIC in .env.preprod
+yarn env:down
 ```
 
-### Test Coverage
-
-| Test | Description |
-|---|---|
-| `deploys the NoxBallot voting contract` | Contract deploys, all ledger state initialized correctly |
-| `allows a valid voter to cast a ballot privately` | ZK proof generated, tally incremented, individual choice hidden |
-| `prevents double voting using the nullifier mechanism` | Second vote from same voter_id is rejected by the ZK circuit |
-| `allows admin to close the voting session` | Admin circuit authenticates via private key hash |
-
----
-
-## 🏗️ Architecture
-
-```
-NoxBallot/
-├── contracts/
-│   ├── noxballot.compact       ← Compact source (the ONLY file you write)
-│   ├── index.ts                ← Contract entry point for Node.js
-│   └── managed/                ← AUTO-GENERATED by compact compile
-│       └── noxballot/
-│           ├── contract/       ← TypeScript types + JS module
-│           └── keys/           ← ZK proving/verifying keys
-├── frontend/
-│   ├── src/
-│   │   ├── lib/midnight.ts     ← SDK utilities, session factory
-│   │   ├── contexts/           ← WalletContext (1AM/Lace/Nightly)
-│   │   ├── pages/              ← Home, Vote, Results, Admin
-│   │   └── components/         ← NavBar, WalletButton, ThemeToggle
-│   ├── public/managed/         ← ZK keys served at /managed/ by Vite
-│   └── vercel.json             ← SPA routing + WASM CORS headers
-├── src/
-│   ├── config.ts               ← Network configs (local/preview/preprod)
-│   ├── providers.ts            ← Provider builder for Node.js tests
-│   └── test/noxballot.test.ts
-├── scripts/wait-for-dust.ts    ← Pre-test DUST accrual check
-├── .github/workflows/ci.yaml   ← CI/CD pipeline
-└── compose.yml                 ← Local Docker network
-```
-
-### Compact Contract Circuits
-
-| Circuit | Type | Privacy |
-|---|---|---|
-| `constructor` | Impure | Initializes public ledger state |
-| `cast_vote` | Impure ZK | Vote choice is PRIVATE — only tally updates on-chain |
-| `update_session` | Impure ZK | Admin key is PRIVATE — hash compared on-chain |
-| `nox_admin_key` | Pure | Derives admin hash from secret key |
-| `make_vote_nullifier` | Pure | Derives anonymous voter commitment |
-
----
-
-## 🔐 Public State vs Private Witnesses
-
-In Midnight's Compact language:
-
-**Public (`ledger` variables)** — stored on-chain, anyone can read:
-```compact
-export ledger total_votes: Uint<32>;      // publicly auditable
-export ledger votes_for: Uint<32>;        // publicly auditable
-export ledger nullifiers: Set<Bytes<32>>; // anonymous commitments only
-```
-
-**Private (`witness` functions)** — supplied at transaction time, run only in the ZK circuit:
-```compact
-witness voter_credential(): VoterCredential;  // voter_id + eligibility_key — NEVER on-chain
-witness vote_choice(): Uint<32>;              // the actual ballot — NEVER on-chain
-```
-
-The `cast_vote` circuit uses `disclose()` only to update the tally counters — never to reveal the individual choice. The ZK proof cryptographically certifies the computation is correct without revealing the inputs.
-
----
-
-## 🌐 Networks
-
-| Network | Indexer | Explorer |
-|---|---|---|
-| Local | http://localhost:8088/api/v4/graphql | None |
-| Preprod | https://indexer.preprod.midnight.network/api/v4/graphql | https://preprod.midnightexplorer.com |
-| Preview | https://indexer.preview.midnight.network/api/v4/graphql | https://preview.midnightexplorer.com |
-
-**Get DUST (fee tokens):** https://faucet.preprod.midnight.network/api/drips
-
----
-
-## 🚢 Deploy to Vercel
-
+### 5. Running the Frontend Application
+To run the React frontend locally and interact with the smart contract:
 ```bash
 cd frontend
-yarn build
-# Upload dist/ to Vercel — or connect GitHub repo for auto-deploy
+npm install
+npm run dev
 ```
-
-The `vercel.json` handles SPA routing and sets CORS headers required for WASM.
-
----
-
-## ⚙️ CI/CD
-
-The `.github/workflows/ci.yaml` pipeline runs on every push to `main`:
-
-1. **install-and-test**: Installs deps → compiles contract → starts Docker network → waits for DUST → runs test suite
-2. **build-frontend**: Installs frontend deps → runs Vite build
+Navigate to `http://localhost:5173`. You must have the **1AM wallet** browser extension installed and configured to the appropriate network (Local or Preprod) to interact with the application.
 
 ---
 
-*Built for the Midnight Network Hackathon, September 2026.*  
-*Privacy model: Zero-knowledge proofs via Compact 0.31.0 on Midnight Preprod.*  
-*"Cast in shadow. Counted in light."*
+## Author & Acknowledgements
+
+**NoxBallot** was developed by **raaes2** as part of the Midnight Network hackathon.
+
+- **GitHub:** [@raaes2](https://github.com/raaes2)
+- **X (Twitter):** [@raeessj](https://x.com/raeessj)
+
+*Built with privacy and security in mind on the Midnight Network.*
