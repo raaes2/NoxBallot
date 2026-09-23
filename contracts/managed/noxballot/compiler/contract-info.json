@@ -48,7 +48,7 @@
       }
     },
     {
-      "name": "vault_admin_key",
+      "name": "nox_admin_key",
       "pure": true,
       "proof": false,
       "arguments": [
@@ -66,7 +66,7 @@
       }
     },
     {
-      "name": "make_voter_nullifier",
+      "name": "make_vote_nullifier",
       "pure": true,
       "proof": false,
       "arguments": [

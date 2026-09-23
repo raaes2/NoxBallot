@@ -25,8 +25,8 @@ export type ProvableCircuits<PS> = {
 }
 
 export type PureCircuits = {
-  vault_admin_key(sk_0: Uint8Array): Uint8Array;
-  make_voter_nullifier(voter_id_0: Uint8Array): Uint8Array;
+  nox_admin_key(sk_0: Uint8Array): Uint8Array;
+  make_vote_nullifier(voter_id_0: Uint8Array): Uint8Array;
 }
 
 export type Circuits<PS> = {
@@ -35,9 +35,9 @@ export type Circuits<PS> = {
                  new_deadline_0: bigint,
                  new_max_0: bigint,
                  active_0: boolean): __compactRuntime.CircuitResults<PS, []>;
-  vault_admin_key(context: __compactRuntime.CircuitContext<PS>, sk_0: Uint8Array): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  make_voter_nullifier(context: __compactRuntime.CircuitContext<PS>,
-                       voter_id_0: Uint8Array): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  nox_admin_key(context: __compactRuntime.CircuitContext<PS>, sk_0: Uint8Array): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  make_vote_nullifier(context: __compactRuntime.CircuitContext<PS>,
+                      voter_id_0: Uint8Array): __compactRuntime.CircuitResults<PS, Uint8Array>;
 }
 
 export type Ledger = {

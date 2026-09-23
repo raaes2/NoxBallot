@@ -5,7 +5,7 @@
   "type": "module",
   "engines": { "node": ">=22.0.0" },
   "scripts": {
-    "compile": "compactc compile contracts/noxballot.compact contracts/managed/noxballot",
+    "compile": "wsl ~/.local/bin/compact compile contracts/noxballot.compact contracts/managed/noxballot",
     "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' vitest run",
     "test:local": "cross-env MIDNIGHT_NETWORK=local yarn test",
     "test:preview": "cross-env MIDNIGHT_NETWORK=preview yarn test",

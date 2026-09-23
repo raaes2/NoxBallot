@@ -31,7 +31,7 @@
     { "op": "declare_pub_input", "var": 9 },
     { "op": "declare_pub_input", "var": 10 },
     { "op": "pi_skip", "guard": 3, "count": 5 },
-    { "op": "load_imm", "imm": "7665696C5661756C743A61646D696E3A7631" },
+    { "op": "load_imm", "imm": "6E6F7842616C6C6F743A61646D696E3A7631" },
     { "op": "persistent_hash", "alignment": [{ "tag": "atom", "value": { "length": 32, "tag": "bytes" } }, { "tag": "atom", "value": { "length": 32, "tag": "bytes" } }], "inputs": [8, 13, 4, 5] },
     { "op": "test_eq", "a": 9, "b": 14 },
     { "op": "test_eq", "a": 10, "b": 15 },
