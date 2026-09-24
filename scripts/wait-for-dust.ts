@@ -1,12 +1,13 @@
 import { WebSocket } from 'ws';
 import { setNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
-import { FluentWalletBuilder } from '@midnight-ntwrk/testkit-js';
+import { FluentWalletBuilder, syncWallet } from '@midnight-ntwrk/testkit-js';
 
 // @ts-expect-error
 globalThis.WebSocket = WebSocket;
 
 const config = {
-  networkId: 'undeployed',
+  walletNetworkId: 'undeployed' as any,
+  networkId: 'undeployed' as any,
   indexer: 'http://127.0.0.1:8088/api/v4/graphql',
   indexerWS: 'ws://127.0.0.1:8088/api/v4/graphql/ws',
   node: 'http://127.0.0.1:9944',
@@ -17,18 +18,19 @@ const config = {
 
 setNetworkId(config.networkId as any);
 
-const wallet = await FluentWalletBuilder.newWalletFromSeed(
-  '0000000000000000000000000000000000000000000000000000000000000001',
-  config,
-);
+const wallet = await FluentWalletBuilder.forEnvironment(config)
+  .withSeed('0000000000000000000000000000000000000000000000000000000000000001')
+  .build();
 
 console.log('Waiting for DUST...');
 let attempts = 0;
 while (attempts < 120) {
   try {
-    const balance = await wallet.getBalance();
-    if (balance > 0n) {
-      console.log(`DUST ready: ${balance}`);
+    const syncedState = await syncWallet(wallet);
+    const dustBalance = syncedState.dust.balance(new Date());
+    if (dustBalance > 0n) {
+      console.log(`DUST ready: ${dustBalance}`);
+      await wallet.stop();
       process.exit(0);
     }
   } catch {
@@ -39,4 +41,5 @@ while (attempts < 120) {
   console.log(`Waiting... attempt ${attempts}`);
 }
 console.error('DUST never arrived. Is Docker running?');
+await wallet.stop();
 process.exit(1);

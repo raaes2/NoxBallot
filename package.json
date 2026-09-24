@@ -5,7 +5,7 @@
   "type": "module",
   "engines": { "node": ">=22.0.0" },
   "scripts": {
-    "compile": "wsl ~/.local/bin/compact compile contracts/noxballot.compact contracts/managed/noxballot",
+    "compile": "node scripts/compile.cjs",
     "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' vitest run",
     "test:local": "cross-env MIDNIGHT_NETWORK=local yarn test",
     "test:preview": "cross-env MIDNIGHT_NETWORK=preview yarn test",
@@ -34,6 +34,9 @@
     "cross-env": "^10.1.0",
     "typescript": "^5.7.0",
     "vitest": "^4.1.0"
+  },
+  "resolutions": {
+    "@midnight-ntwrk/ledger-v8": "8.1.2"
   },
   "packageManager": "yarn@1.22.22"
 }

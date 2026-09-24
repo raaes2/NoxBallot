@@ -59,10 +59,9 @@ describe(`NoxBallot Private Voting Contract (${network})`, () => {
       proofServer: config.proofServer,
     };
 
-    wallet =
-      secret.kind === 'seed'
-        ? await FluentWalletBuilder.newWalletFromSeed(secret.value, envConfig)
-        : await FluentWalletBuilder.newWalletFromMnemonic(secret.value, envConfig);
+    wallet = await (secret.kind === 'seed'
+      ? FluentWalletBuilder.forEnvironment(envConfig).withSeed(secret.value).build()
+      : FluentWalletBuilder.forEnvironment(envConfig).withMnemonic(secret.value).build());
 
     await wallet.start?.();
 

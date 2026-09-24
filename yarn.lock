@@ -131,12 +131,7 @@
   resolved "https://registry.yarnpkg.com/@midnight-ntwrk/dapp-connector-api/-/dapp-connector-api-4.0.1.tgz#4f3a240704d9993e59b93eba6f2f16c047cf4542"
   integrity sha512-IstRo8xfmlJlGgUcAJeRzPUmGCp0/xZR3/bfTOk33MHrzbGmB79r/zYziGavcclo1pkkoBHAodX4vz3xgFxczw==
 
-"@midnight-ntwrk/ledger-v8@8.1.0":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@midnight-ntwrk/ledger-v8/-/ledger-v8-8.1.0.tgz#c42ed442b6c8c79e28ca5fc13a8764f31eab2f73"
-  integrity sha512-rwOVP5kBwACpYmmY6+oLeaiM3e5gHscRMjbZUOntOC5QdtqLdpeep6eQW1OngI+sxjjdVoGg2eE16sLf+DAHmQ==
-
-"@midnight-ntwrk/ledger-v8@^8.0.3", "@midnight-ntwrk/ledger-v8@^8.1.0":
+"@midnight-ntwrk/ledger-v8@8.1.0", "@midnight-ntwrk/ledger-v8@8.1.2", "@midnight-ntwrk/ledger-v8@^8.0.3", "@midnight-ntwrk/ledger-v8@^8.1.0":
   version "8.1.2"
   resolved "https://registry.yarnpkg.com/@midnight-ntwrk/ledger-v8/-/ledger-v8-8.1.2.tgz#1cb93e168dc220b073eb22e060e16a692d705541"
   integrity sha512-H8r5J892bltVtplh1bq947SH/+/jWx07/PaIGSQG8Bd21bObN+sR5eMVTb/RRIRlf2g7MJB4jzgbikMnVZnHqA==
