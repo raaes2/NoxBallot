@@ -26,10 +26,10 @@ export const BaseCompiledNoxBallot = (CompiledContract.withCompiledFileAssets as
 
 /** Fully compiled contract with stub witnesses for deployment. */
 export const CompiledNoxBallot = (CompiledContract.withWitnesses as any)(BaseCompiledNoxBallot, {
-  voter_credential: () => ({
+  voter_credential: (ctx: any) => [ctx.privateState, {
     voter_id: new Uint8Array(32),
     eligibility_key: new Uint8Array(32),
-  }),
-  admin_secret: () => new Uint8Array(32),
-  vote_choice: () => 0n,
+  }],
+  admin_secret: (ctx: any) => [ctx.privateState, new Uint8Array(32)],
+  vote_choice: (ctx: any) => [ctx.privateState, 0n],
 });

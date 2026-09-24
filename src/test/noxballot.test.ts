@@ -32,15 +32,15 @@ function resolveSecret() {
 
 /** Helper: create a per-call compiled contract with the specified witnesses baked in. */
 function compiledWithWitnesses(witnesses: {
-  voter_credential?: () => { voter_id: Uint8Array; eligibility_key: Uint8Array };
-  admin_secret?: () => Uint8Array;
-  vote_choice?: () => bigint;
+  voter_credential?: (ctx: any) => [any, { voter_id: Uint8Array; eligibility_key: Uint8Array }];
+  admin_secret?: (ctx: any) => [any, Uint8Array];
+  vote_choice?: (ctx: any) => [any, bigint];
 }) {
   // Use 2-arg form directly since .pipe() is lost after SDK spread operations
   return (CompiledContract.withWitnesses as any)(BaseCompiledNoxBallot, {
-    voter_credential: witnesses.voter_credential ?? (() => ({ voter_id: new Uint8Array(32), eligibility_key: new Uint8Array(32) })),
-    admin_secret: witnesses.admin_secret ?? (() => new Uint8Array(32)),
-    vote_choice: witnesses.vote_choice ?? (() => 0n),
+    voter_credential: witnesses.voter_credential ?? ((ctx: any) => [ctx.privateState, { voter_id: new Uint8Array(32), eligibility_key: new Uint8Array(32) }]),
+    admin_secret: witnesses.admin_secret ?? ((ctx: any) => [ctx.privateState, new Uint8Array(32)]),
+    vote_choice: witnesses.vote_choice ?? ((ctx: any) => [ctx.privateState, 0n]),
   });
 }
 
@@ -130,8 +130,8 @@ describe(`NoxBallot Private Voting Contract (${network})`, () => {
 
     await submitCallTx(providers as any, {
       compiledContract: compiledWithWitnesses({
-        voter_credential: () => ({ voter_id: voterId, eligibility_key: eligibilityKey }),
-        vote_choice: () => 0n, // Vote FOR
+        voter_credential: (ctx: any) => [ctx.privateState, { voter_id: voterId, eligibility_key: eligibilityKey }],
+        vote_choice: (ctx: any) => [ctx.privateState, 0n], // Vote FOR
       }),
       contractAddress,
       circuitId: 'cast_vote',
@@ -154,8 +154,8 @@ describe(`NoxBallot Private Voting Contract (${network})`, () => {
     // First vote — succeeds
     await submitCallTx(providers as any, {
       compiledContract: compiledWithWitnesses({
-        voter_credential: () => ({ voter_id: voterId, eligibility_key: eligibilityKey }),
-        vote_choice: () => 1n, // Vote AGAINST
+        voter_credential: (ctx: any) => [ctx.privateState, { voter_id: voterId, eligibility_key: eligibilityKey }],
+        vote_choice: (ctx: any) => [ctx.privateState, 1n], // Vote AGAINST
       }),
       contractAddress,
       circuitId: 'cast_vote',
@@ -167,8 +167,8 @@ describe(`NoxBallot Private Voting Contract (${network})`, () => {
     await expect(
       submitCallTx(providers as any, {
         compiledContract: compiledWithWitnesses({
-          voter_credential: () => ({ voter_id: voterId, eligibility_key: eligibilityKey }),
-          vote_choice: () => 0n,
+          voter_credential: (ctx: any) => [ctx.privateState, { voter_id: voterId, eligibility_key: eligibilityKey }],
+          vote_choice: (ctx: any) => [ctx.privateState, 0n],
         }),
         contractAddress,
         circuitId: 'cast_vote',
@@ -186,7 +186,7 @@ describe(`NoxBallot Private Voting Contract (${network})`, () => {
 
     await submitCallTx(providers as any, {
       compiledContract: compiledWithWitnesses({
-        admin_secret: () => adminSk,
+        admin_secret: (ctx: any) => [ctx.privateState, adminSk],
       }),
       contractAddress,
       circuitId: 'update_session',
