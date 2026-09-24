@@ -17,13 +17,24 @@ export function buildProviders(
   wallet: any,
   zkConfigPath: string,
   config: NetworkConfig,
+  accountId = 'noxballot-default-account',
 ): NoxBallotProviders {
+  // walletProvider and midnightProvider live directly on MidnightWalletProvider,
+  // but FluentWalletBuilder.build() returns a WalletFacade which IS both providers.
+  // Support both shapes:
+  const walletProvider = wallet.walletProvider ?? wallet;
+  const midnightProvider = wallet.midnightProvider ?? wallet;
+
   return {
-    privateStateProvider: levelPrivateStateProvider({ db: 'noxballot-level-db' }),
+    privateStateProvider: levelPrivateStateProvider({
+      midnightDbName: 'noxballot-level-db',
+      privateStoragePasswordProvider: () => 'NoxBallot!Super#Secret$Key99',
+      accountId,
+    }),
     publicDataProvider: indexerPublicDataProvider(config.indexer, config.indexerWS),
     zkConfigProvider: new NodeZkConfigProvider(zkConfigPath),
     proofProvider: httpClientProofProvider(config.proofServer),
-    walletProvider: wallet.wallet.walletProvider,
-    midnightProvider: wallet.wallet.midnightProvider,
+    walletProvider,
+    midnightProvider,
   };
 }
