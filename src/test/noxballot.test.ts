@@ -3,7 +3,7 @@ import { WebSocket } from 'ws';
 import { setNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
 import { deployContract, submitCallTx, type DeployedContract } from '@midnight-ntwrk/midnight-js-contracts';
 import type { ContractAddress } from '@midnight-ntwrk/midnight-js-protocol/compact-runtime';
-import { type EnvironmentConfiguration, waitForFunds, FluentWalletBuilder } from '@midnight-ntwrk/testkit-js';
+import { type EnvironmentConfiguration, waitForFunds, MidnightWalletProvider } from '@midnight-ntwrk/testkit-js';
 import pino from 'pino';
 import crypto from 'crypto';
 import { getConfig } from '../config.js';
@@ -59,9 +59,11 @@ describe(`NoxBallot Private Voting Contract (${network})`, () => {
       proofServer: config.proofServer,
     };
 
-    wallet = await (secret.kind === 'seed'
-      ? FluentWalletBuilder.forEnvironment(envConfig).withSeed(secret.value).build()
-      : FluentWalletBuilder.forEnvironment(envConfig).withMnemonic(secret.value).build());
+    wallet = await MidnightWalletProvider.build(
+      logger,
+      envConfig,
+      secret.value
+    );
 
     await wallet.start?.();
 

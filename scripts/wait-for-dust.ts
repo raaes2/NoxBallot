@@ -1,6 +1,7 @@
 import { WebSocket } from 'ws';
 import { setNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
-import { FluentWalletBuilder, syncWallet } from '@midnight-ntwrk/testkit-js';
+import { MidnightWalletProvider, syncWallet } from '@midnight-ntwrk/testkit-js';
+import pino from 'pino';
 
 // @ts-expect-error
 globalThis.WebSocket = WebSocket;
@@ -18,9 +19,9 @@ const config = {
 
 setNetworkId(config.networkId as any);
 
-const wallet = await FluentWalletBuilder.forEnvironment(config)
-  .withSeed('0000000000000000000000000000000000000000000000000000000000000001')
-  .build();
+const logger = pino({ level: 'silent' });
+const walletWrapper = await MidnightWalletProvider.build(logger, config, '0000000000000000000000000000000000000000000000000000000000000001');
+const wallet = walletWrapper.wallet;
 
 console.log('Waiting for DUST...');
 let attempts = 0;
