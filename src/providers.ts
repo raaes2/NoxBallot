@@ -25,6 +25,8 @@ export function buildProviders(
   const walletProvider = wallet.walletProvider ?? wallet;
   const midnightProvider = wallet.midnightProvider ?? wallet;
 
+  const zkConfigProvider = new NodeZkConfigProvider(zkConfigPath);
+
   return {
     privateStateProvider: levelPrivateStateProvider({
       midnightDbName: 'noxballot-level-db',
@@ -32,8 +34,8 @@ export function buildProviders(
       accountId,
     }),
     publicDataProvider: indexerPublicDataProvider(config.indexer, config.indexerWS),
-    zkConfigProvider: new NodeZkConfigProvider(zkConfigPath),
-    proofProvider: httpClientProofProvider(config.proofServer),
+    zkConfigProvider,
+    proofProvider: httpClientProofProvider(config.proofServer, zkConfigProvider),
     walletProvider,
     midnightProvider,
   };

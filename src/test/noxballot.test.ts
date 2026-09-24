@@ -2,13 +2,14 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { WebSocket } from 'ws';
 import { setNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
 import { deployContract, submitCallTx, type DeployedContract } from '@midnight-ntwrk/midnight-js-contracts';
+import { CompiledContract } from '@midnight-ntwrk/midnight-js-protocol/compact-js';
 import type { ContractAddress } from '@midnight-ntwrk/midnight-js-protocol/compact-runtime';
 import { type EnvironmentConfiguration, waitForFunds, MidnightWalletProvider } from '@midnight-ntwrk/testkit-js';
 import pino from 'pino';
 import crypto from 'crypto';
 import { getConfig } from '../config.js';
 import { buildProviders, type NoxBallotProviders } from '../providers.js';
-import { CompiledNoxBallot, Contract, ledger, pureCircuits, zkConfigPath } from '../../contracts/index.js';
+import { CompiledNoxBallot, BaseCompiledNoxBallot, Contract, ledger, pureCircuits, zkConfigPath } from '../../contracts/index.js';
 
 // @ts-expect-error
 globalThis.WebSocket = WebSocket;
@@ -27,6 +28,21 @@ function resolveSecret() {
   if (mnemonic) return { kind: 'mnemonic' as const, value: mnemonic };
   if (seed) return { kind: 'seed' as const, value: seed };
   throw new Error(`Set MIDNIGHT_${upper}_MNEMONIC or MIDNIGHT_${upper}_SEED`);
+}
+
+/** Helper: create a per-call compiled contract with the specified witnesses baked in. */
+function compiledWithWitnesses(witnesses: {
+  voter_credential?: () => { voter_id: Uint8Array; eligibility_key: Uint8Array };
+  admin_secret?: () => Uint8Array;
+  vote_choice?: () => bigint;
+}) {
+  return BaseCompiledNoxBallot.pipe(
+    CompiledContract.withWitnesses({
+      voter_credential: witnesses.voter_credential ?? (() => ({ voter_id: new Uint8Array(32), eligibility_key: new Uint8Array(32) })),
+      admin_secret: witnesses.admin_secret ?? (() => new Uint8Array(32)),
+      vote_choice: witnesses.vote_choice ?? (() => 0n),
+    }),
+  );
 }
 
 describe(`NoxBallot Private Voting Contract (${network})`, () => {
@@ -113,14 +129,16 @@ describe(`NoxBallot Private Voting Contract (${network})`, () => {
     const voterId = new Uint8Array(crypto.randomBytes(32));
     const eligibilityKey = new Uint8Array(crypto.randomBytes(32));
 
-    await submitCallTx<Contract>(providers, { contractAddress } as any, {
-      circuitId: 'cast_vote',
-      witnesses: {
+    await submitCallTx(providers as any, {
+      compiledContract: compiledWithWitnesses({
         voter_credential: () => ({ voter_id: voterId, eligibility_key: eligibilityKey }),
         vote_choice: () => 0n, // Vote FOR
-      },
+      }),
+      contractAddress,
+      circuitId: 'cast_vote',
+      privateStateId: PRIVATE_STATE_ID,
       args: [],
-    });
+    } as any);
 
     const state = await queryLedger(providers);
     expect(state.total_votes).toEqual(1n);
@@ -135,25 +153,29 @@ describe(`NoxBallot Private Voting Contract (${network})`, () => {
     const eligibilityKey = new Uint8Array(crypto.randomBytes(32));
 
     // First vote — succeeds
-    await submitCallTx<Contract>(providers, { contractAddress } as any, {
-      circuitId: 'cast_vote',
-      witnesses: {
+    await submitCallTx(providers as any, {
+      compiledContract: compiledWithWitnesses({
         voter_credential: () => ({ voter_id: voterId, eligibility_key: eligibilityKey }),
         vote_choice: () => 1n, // Vote AGAINST
-      },
+      }),
+      contractAddress,
+      circuitId: 'cast_vote',
+      privateStateId: PRIVATE_STATE_ID,
       args: [],
-    });
+    } as any);
 
     // Second vote with the same voter_id — MUST be rejected
     await expect(
-      submitCallTx<Contract>(providers, { contractAddress } as any, {
-        circuitId: 'cast_vote',
-        witnesses: {
+      submitCallTx(providers as any, {
+        compiledContract: compiledWithWitnesses({
           voter_credential: () => ({ voter_id: voterId, eligibility_key: eligibilityKey }),
           vote_choice: () => 0n,
-        },
+        }),
+        contractAddress,
+        circuitId: 'cast_vote',
+        privateStateId: PRIVATE_STATE_ID,
         args: [],
-      }),
+      } as any),
     ).rejects.toThrow();
 
     logger.info('Nullifier correctly prevented double voting');
@@ -163,13 +185,15 @@ describe(`NoxBallot Private Voting Contract (${network})`, () => {
   it('allows admin to close the voting session', async () => {
     const newDeadline = BigInt(Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60); // 7 days
 
-    await submitCallTx<Contract>(providers, { contractAddress } as any, {
-      circuitId: 'update_session',
-      witnesses: {
+    await submitCallTx(providers as any, {
+      compiledContract: compiledWithWitnesses({
         admin_secret: () => adminSk,
-      },
+      }),
+      contractAddress,
+      circuitId: 'update_session',
+      privateStateId: PRIVATE_STATE_ID,
       args: [newDeadline, 500n, false],
-    });
+    } as any);
 
     const state = await queryLedger(providers);
     expect(state.is_active).toBe(false);
