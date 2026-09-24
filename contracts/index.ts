@@ -16,6 +16,13 @@ const currentDir = path.resolve(fileURLToPath(import.meta.url), '..');
 export const zkConfigPath = path.resolve(currentDir, 'managed', 'noxballot');
 
 export const CompiledNoxBallot = CompiledContract.make('NoxBallot', Contract).pipe(
-  CompiledContract.withVacantWitnesses,
+  CompiledContract.withWitnesses({
+    voter_credential: () => ({
+      voter_id: new Uint8Array(32),
+      eligibility_key: new Uint8Array(32),
+    }),
+    admin_secret: () => new Uint8Array(32),
+    vote_choice: () => 0n,
+  }),
   CompiledContract.withCompiledFileAssets(zkConfigPath),
 );
