@@ -19,29 +19,36 @@ const config = {
 
 setNetworkId(config.networkId as any);
 
-const logger = pino({ level: 'silent' });
-const walletWrapper = await MidnightWalletProvider.build(logger, config, '0000000000000000000000000000000000000000000000000000000000000001');
-await walletWrapper.start();
-const wallet = walletWrapper.wallet;
-
 console.log('Waiting for DUST...');
 let attempts = 0;
 while (attempts < 120) {
+  let walletWrapper: any;
   try {
-    const syncedState = await syncWallet(wallet);
+    const logger = pino({ level: 'silent' });
+    walletWrapper = await MidnightWalletProvider.build(logger, config, '0000000000000000000000000000000000000000000000000000000000000001');
+    await walletWrapper.start();
+    
+    const syncedState = await Promise.race([
+      syncWallet(walletWrapper.wallet),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
+    ]);
+    
     const dustBalance = syncedState.dust.balance(new Date());
     if (dustBalance > 0n) {
       console.log(`DUST ready: ${dustBalance}`);
-      await wallet.stop();
+      await walletWrapper.stop();
       process.exit(0);
     }
   } catch {
     // ignore
+  } finally {
+    if (walletWrapper) {
+      try { await walletWrapper.stop(); } catch {}
+    }
   }
   await new Promise((r) => setTimeout(r, 5000));
   attempts++;
   console.log(`Waiting... attempt ${attempts}`);
 }
 console.error('DUST never arrived. Is Docker running?');
-await wallet.stop();
 process.exit(1);
