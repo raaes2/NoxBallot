@@ -36,13 +36,12 @@ function compiledWithWitnesses(witnesses: {
   admin_secret?: () => Uint8Array;
   vote_choice?: () => bigint;
 }) {
-  return BaseCompiledNoxBallot.pipe(
-    CompiledContract.withWitnesses({
-      voter_credential: witnesses.voter_credential ?? (() => ({ voter_id: new Uint8Array(32), eligibility_key: new Uint8Array(32) })),
-      admin_secret: witnesses.admin_secret ?? (() => new Uint8Array(32)),
-      vote_choice: witnesses.vote_choice ?? (() => 0n),
-    }),
-  );
+  // Use 2-arg form directly since .pipe() is lost after SDK spread operations
+  return (CompiledContract.withWitnesses as any)(BaseCompiledNoxBallot, {
+    voter_credential: witnesses.voter_credential ?? (() => ({ voter_id: new Uint8Array(32), eligibility_key: new Uint8Array(32) })),
+    admin_secret: witnesses.admin_secret ?? (() => new Uint8Array(32)),
+    vote_choice: witnesses.vote_choice ?? (() => 0n),
+  });
 }
 
 describe(`NoxBallot Private Voting Contract (${network})`, () => {
