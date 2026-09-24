@@ -21,6 +21,7 @@ setNetworkId(config.networkId as any);
 
 const logger = pino({ level: 'silent' });
 const walletWrapper = await MidnightWalletProvider.build(logger, config, '0000000000000000000000000000000000000000000000000000000000000001');
+await walletWrapper.start();
 const wallet = walletWrapper.wallet;
 
 console.log('Waiting for DUST...');
