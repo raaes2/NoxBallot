@@ -9,7 +9,7 @@
 [![State](https://img.shields.io/badge/Level-4%20Complete-success?style=for-the-badge)](#)
 [![CI](https://github.com/raaes2/NoxBallot/actions/workflows/ci.yaml/badge.svg)](https://github.com/raaes2/NoxBallot/actions/workflows/ci.yaml)
 [![Deploy on Vercel](https://img.shields.io/badge/Deploy-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/new/clone?repository-url=https://github.com/raaes2/NoxBallot&root=frontend)
-[![X (Twitter) Follow](https://img.shields.io/twitter/follow/raeessj?style=for-the-badge)](https://x.com/raeessj)
+[![X (Twitter) Follow](https://img.shields.io/twitter/follow/noxballot?style=for-the-badge)](https://x.com/noxballot)
 
 ---
 
@@ -36,7 +36,8 @@ NoxBallot is a decentralized application (dApp) engineered on the **Midnight Net
 - **Live Application (Vercel):** [https://nox-ballot.vercel.app/](https://nox-ballot.vercel.app/)
 - **Deployed Contract (Midnight Preprod):** [5a9cd8179b54c81863309dcfacd83f8207f0fc35a1ab79cc4ff524b334c8ae1e](https://preprod.midnightexplorer.com/contracts/5a9cd8179b54c81863309dcfacd83f8207f0fc35a1ab79cc4ff524b334c8ae1e)
 - **Demo Video Presentation:** [Watch on Google Drive](https://drive.google.com/file/d/1YUe91VBOKsM_-cpF4jBO_dhbyJyNmcWX/view?usp=sharing)
-- **Public Brand Presence (X Profile):** [https://x.com/raeessj](https://x.com/raeessj)
+- **Public Brand Presence (X Profile):** [https://x.com/noxballot/status/2103827515374698768?s=20](https://x.com/noxballot/status/2103827515374698768?s=20)
+- **Product X Profile:** [https://x.com/noxballot](https://x.com/noxballot)
 
 ---
 
@@ -199,7 +200,8 @@ This repository fulfills the strict progression requirements of the "New Moon to
   - **Live Application:** [https://nox-ballot.vercel.app/](https://nox-ballot.vercel.app/)
   - **Deployed Contract (Preprod):** [5a9cd8179b54c81863309dcfacd83f8207f0fc35a1ab79cc4ff524b334c8ae1e](https://preprod.midnightexplorer.com/contracts/5a9cd8179b54c81863309dcfacd83f8207f0fc35a1ab79cc4ff524b334c8ae1e)
   - **Demo Video Presentation:** [Watch on Google Drive](https://drive.google.com/file/d/1YUe91VBOKsM_-cpF4jBO_dhbyJyNmcWX/view?usp=sharing)
-  - **Public Brand Presence (X Profile):** [https://x.com/raeessj](https://x.com/raeessj)
+  - **Public Brand Presence (X Profile):** [https://x.com/noxballot/status/2103827515374698768?s=20](https://x.com/noxballot/status/2103827515374698768?s=20)
+  - **Product X Profile:** [https://x.com/noxballot](https://x.com/noxballot)
 
 ---
 
@@ -267,6 +269,6 @@ Navigate to `http://localhost:5173`. You must have the **1AM wallet** browser ex
 **NoxBallot** was developed by **raaes2** as part of the Midnight Network hackathon.
 
 - **GitHub:** [@raaes2](https://github.com/raaes2)
-- **X (Twitter):** [@raeessj](https://x.com/raeessj)
+- **Product X (Twitter):** [@noxballot](https://x.com/noxballot)
 
 *Built with privacy and security in mind on the Midnight Network.*

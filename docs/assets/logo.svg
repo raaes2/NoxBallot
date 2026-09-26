@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 160" width="680" height="160" fill="none">
+  <defs>
+    <linearGradient id="shieldGrad" x1="16" y1="16" x2="144" y2="144" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00F5A0" />
+      <stop offset="1" stop-color="#8B5CF6" />
+    </linearGradient>
+    <linearGradient id="innerGlow" x1="80" y1="20" x2="80" y2="140" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00F5A0" stop-opacity="0.25" />
+      <stop offset="1" stop-color="#8B5CF6" stop-opacity="0.05" />
+    </linearGradient>
+    <filter id="shieldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Shield Emblem Icon -->
+  <g transform="translate(10, 0)">
+    <!-- Shield Outline Glow -->
+    <path
+      d="M80 18 L24 44 V80 C24 116 50 142 80 152 C110 142 136 116 136 80 V44 Z"
+      fill="none"
+      stroke="url(#shieldGrad)"
+      stroke-width="5"
+      stroke-opacity="0.4"
+      filter="url(#shieldGlow)"
+    />
+    <!-- Shield Base -->
+    <path
+      d="M80 18 L24 44 V80 C24 116 50 142 80 152 C110 142 136 116 136 80 V44 Z"
+      fill="url(#innerGlow)"
+      stroke="url(#shieldGrad)"
+      stroke-width="7"
+      stroke-linejoin="round"
+    />
+    <!-- Ballot Slot -->
+    <path d="M54 62 H106" stroke="#00F5A0" stroke-width="7" stroke-linecap="round" />
+    <!-- Sealed Ballot -->
+    <rect x="68" y="40" width="24" height="26" rx="4" fill="#00F5A0" fill-opacity="0.95" />
+    <!-- Central Keyhole Secrecy Core -->
+    <circle cx="80" cy="98" r="11" stroke="#F8FAFC" stroke-width="7" fill="none" />
+    <path d="M80 109 V122" stroke="#F8FAFC" stroke-width="7" stroke-linecap="round" />
+  </g>
+
+  <!-- Wordmark & Typography -->
+  <text x="180" y="96" font-family="'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="64" font-weight="800" fill="#F8FAFC" letter-spacing="-1.5">
+    NOX<tspan fill="#00F5A0" font-weight="700" dx="10">BALLOT</tspan>
+  </text>
+
+  <!-- Subtitle Tagline -->
+  <text x="184" y="128" font-family="'IBM Plex Mono', monospace, sans-serif" font-size="14" font-weight="600" fill="#94A3B8" letter-spacing="4">
+    ZERO-KNOWLEDGE GOVERNANCE · MIDNIGHT
+  </text>
+</svg>

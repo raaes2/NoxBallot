@@ -14,7 +14,7 @@
 | **Smart Contract Address (Preprod)** | `5a9cd8179b54c81863309dcfacd83f8207f0fc35a1ab79cc4ff524b334c8ae1e` |
 | **Live Web Application** | [https://nox-ballot.vercel.app/](https://nox-ballot.vercel.app/) |
 | **Source Repository** | [https://github.com/raaes2/NoxBallot](https://github.com/raaes2/NoxBallot) |
-| **Lead Developer / Contact** | [@raeessj](https://x.com/raeessj) |
+| **Product X (Twitter)** | [@noxballot](https://x.com/noxballot) |
 
 ---
 
@@ -187,7 +187,7 @@ NoxBallot is structured with an incremental, production-grade roadmap designed t
 ### 4.2 Level 4: Live MVP & Public Exposure (Current Milestone)
 * [x] **Production Web Hosting:** Deployed to Vercel at [https://nox-ballot.vercel.app/](https://nox-ballot.vercel.app/).
 * [x] **1AM Wallet Connectivity:** Live connection to Preprod wallet, displaying balance, addresses, and contract synchronization.
-* [x] **Public Brand Identity:** Active X profile [@raeessj](https://x.com/raeessj) with project updates.
+* [x] **Public Brand Identity:** Active X profile [@noxballot](https://x.com/noxballot) with project updates.
 * [x] **Video Presentation:** Walkthrough demonstration displaying contract deployment, client-side proof generation, and real-time state sync.
 
 ### 4.3 Level 5: Governance Scaling & Feature Expansion
